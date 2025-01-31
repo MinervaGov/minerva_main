@@ -8,11 +8,7 @@ export const metadata = {
   description: "Get started with Collab.Land",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en" className="light">
       <body className={`${inter.className} bg-white min-h-screen`}>

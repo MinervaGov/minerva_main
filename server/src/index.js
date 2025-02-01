@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-
+import userRoutes from "./routes/userRoute.js";
+import agentRoutes from "./routes/agentRoute.js";
 // Load environment variables
 dotenv.config();
 
@@ -13,8 +14,11 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use("/api/users", userRoutes);
+app.use("/api/agents", agentRoutes);
+
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Minerva Backend is running 🚀");
 });
 
 // Start server

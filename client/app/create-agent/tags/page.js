@@ -1,7 +1,7 @@
 import React from "react";
 
 import PageContainer from "@/components/layout/onBoard/PageContainer";
-import CreateAgent from "@/components/layout/onBoard/createAgent/CreateAgent";
+import TagsAgent from "@/components/layout/onBoard/createAgent/TagsAgent";
 
 const CreateAgentPage = () => {
   return (
@@ -10,7 +10,7 @@ const CreateAgentPage = () => {
       subHeading="Choose your bot’s decision-making and how your bot should gather insights and vote in DAOs."
       paragraph="Build Your AI Ally"
     >
-      <CreateAgent />
+      <TagsAgent />
     </PageContainer>
   );
 };

@@ -59,7 +59,7 @@ const TwitterAgent = () => {
 
       setIsTyping(true);
     });
-  }, []);
+  }, [isConnected, user]);
 
   useEffect(() => {
     if (isTyping) {

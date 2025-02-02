@@ -55,7 +55,7 @@ const CreateAgent = () => {
 
       setIsTyping(true);
     });
-  }, []);
+  }, [isConnected, user]);
 
   useEffect(() => {
     if (isTyping) {
@@ -64,8 +64,6 @@ const CreateAgent = () => {
       checkAgentName();
     }
   }, [isTyping, agentName]);
-
-  console.log(isTyping);
 
   return (
     <div className="max-w-sm mx-auto space-y-5">

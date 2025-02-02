@@ -3,37 +3,111 @@
 import React from "react";
 import Link from "next/link";
 import MinervaText from "../signin/MinervaText";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useAccount } from "wagmi";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Button, Input } from "@heroui/react";
+import { setAgentName } from "@/redux/slice/setupSlice";
+import useAgent from "@/hooks/useAgent";
+import { useRef, useEffect } from "react";
 
 const CreateAgent = () => {
   const user = useSelector((state) => state.user.user);
   const { isConnected, isConnecting } = useAccount();
   const isLoading = useSelector((state) => state.user.isLoading);
+  const [step, setStep] = useState(0);
+  const [isValid, setIsValid] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
+  const { isValidAgentName } = useAgent();
+  const [isTyping, setIsTyping] = useState(false);
+  const inputRef = useRef(null);
+  let timeout = null;
 
-  const user = useSelector((state) => state.user.user);
-  const { isConnected, isConnecting } = useAccount();
-  const isLoading = useSelector((state) => state.user.isLoading);
+  const agentName = useSelector((state) => state.setup.agentName);
+  const dispatch = useDispatch();
+
+  const handleAgentName = (e) => {
+    dispatch(setAgentName(e.replace(/[^a-zA-Z0-9]/g, "")));
+  };
+
+  const checkAgentName = async () => {
+    const isValid = await isValidAgentName(agentName);
+
+    if (isValid) {
+      setIsValid(true);
+      setIsValidating(false);
+      return;
+    }
+
+    setIsValid(false);
+    setIsValidating(false);
+  };
+
+  useEffect(() => {
+    if (!inputRef.current) return;
+    inputRef.current.addEventListener("keydown", function () {
+      clearTimeout(timeout);
+
+      timeout = setTimeout(function () {
+        setIsTyping(false);
+      }, 1000);
+
+      setIsTyping(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isTyping) {
+      setIsValidating(true);
+    } else {
+      checkAgentName();
+    }
+  }, [isTyping, agentName]);
+
+  console.log(isTyping);
 
   return (
     <div className="max-w-sm mx-auto space-y-5">
       <div className="flex flex-col gap-3">
-        {isConnected && user && (
+        {isConnected && user && step === 0 && (
           <>
             <MinervaText
-              text="Choose your agent’s decision-making and how your agent should gather insights and vote in DAOs."
+              text="Assign me a name of your choice. This will be used to identify me in the community."
               height={85}
             />
 
-            <Link
-              href="/create-agent/twitter"
-              className="block w-full bg-gray-100 mt-2 text-black py-2.5 rounded-xl text-sm hover:bg-gray-300 transition-colors"
+            <div className="flex flex-col gap-1">
+              <Input
+                label="Agent Name"
+                placeholder="Enter your Agent Name"
+                type="text"
+                value={agentName}
+                onValueChange={handleAgentName}
+                ref={inputRef}
+              />
+              <p className="text-sm text-zinc-400 text-right font-bold">
+                .minervagov.eth
+              </p>
+            </div>
+
+            <Button
+              className="w-full text-black bg-gray-100"
+              block
+              isDisabled={
+                !agentName ||
+                isValid ||
+                isValidating ||
+                agentName.length < 3 ||
+                isTyping
+              }
+              onPress={() => setStep(1)}
             >
-              Twitter
-            </Link>
-      <div className="flex flex-col gap-3">
-        {isConnected && user && (
+              Next
+            </Button>
+          </>
+        )}
+        {isConnected && user && step === 1 && (
           <>
             <MinervaText
               text="Choose your agent’s decision-making and how your agent should gather insights and vote in DAOs."

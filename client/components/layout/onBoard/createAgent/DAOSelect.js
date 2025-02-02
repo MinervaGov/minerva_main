@@ -3,15 +3,15 @@ import { Select, SelectItem } from "@heroui/react";
 
 const DAOList = [
   {
-    id: 1,
+    id: "lido",
     name: "Lido",
   },
   {
-    id: 2,
+    id: "arbitrum",
     name: "Arbitrum",
   },
   {
-    id: 3,
+    id: "aave",
     name: "Aave",
   },
 ];

@@ -7,7 +7,7 @@ import {
 import { createPrivyWallet } from "../utils/privy.js";
 import daos from "../utils/daoConfig.js";
 import tagList from "../utils/tagList.js";
-import { getTwitterPosts } from "../utils/twitter.js";
+import { checkProfile, getTwitterPosts } from "../utils/twitter.js";
 import { createTwitterCharacterProfile } from "../utils/openai.js";
 
 const createAgent = async (req, res) => {
@@ -208,6 +208,65 @@ const createAgent = async (req, res) => {
   }
 };
 
+const checkTwitterProfile = async (req, res) => {
+  try {
+    const { twitterId } = req.query;
+
+    if (!twitterId) {
+      return res.json({
+        success: false,
+        message: "Twitter ID is required",
+      });
+    }
+
+    const profile = await checkProfile(twitterId);
+
+    if (!profile) {
+      return res.json({
+        success: false,
+        message: "Twitter profile not found",
+      });
+    }
+
+    return res.json({
+      success: true,
+      profile,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      message: "Error checking twitter profile",
+      error: error.message,
+    });
+  }
+};
+
+const getAgentByAgentName = async (req, res) => {
+  try {
+    const { agentName } = req.params;
+
+    const agent = await getAgentByName(agentName);
+
+    if (!agent) {
+      return res.json({
+        success: false,
+        message: "Agent not found",
+      });
+    }
+
+    return res.json({
+      success: true,
+      agent,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      message: "Error getting agent by name",
+      error: error.message,
+    });
+  }
+};
+
 const testTwitterCharacterProfile = async (req, res) => {
   const twitterPosts = await getTwitterPosts("Anoyroyc");
   const characterProfile = await createTwitterCharacterProfile(twitterPosts);
@@ -216,4 +275,9 @@ const testTwitterCharacterProfile = async (req, res) => {
   });
 };
 
-export { createAgent, testTwitterCharacterProfile };
+export {
+  createAgent,
+  testTwitterCharacterProfile,
+  checkTwitterProfile,
+  getAgentByAgentName,
+};

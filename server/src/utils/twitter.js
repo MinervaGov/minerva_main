@@ -27,4 +27,10 @@ const getTwitterPosts = async (twitterId, maxTweets = 10) => {
   return tweets;
 };
 
-export { getTwitterPosts };
+const checkProfile = async (twitterId) => {
+  const scraper = new Scraper();
+  const profile = await scraper.getProfile(twitterId);
+  return profile;
+};
+
+export { getTwitterPosts, checkProfile };

@@ -19,6 +19,7 @@ const TwitterAgent = () => {
           isSelected={isPrivate}
           setIsSelected={setIsPrivate}
         />
+
         <Input
           label="X Profile"
           placeholder="Enter your Username"
@@ -26,6 +27,7 @@ const TwitterAgent = () => {
           value={username}
           onValueChange={setUsername}
         />
+
         <DAOSelect selectedDAO={selectedDAO} setSelectedDAO={setSelectedDAO} />
       </div>
 

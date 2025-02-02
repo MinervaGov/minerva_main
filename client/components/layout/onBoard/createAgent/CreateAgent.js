@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import MinervaText from "../signin/MinervaText";
@@ -14,8 +12,26 @@ const CreateAgent = () => {
   const { isConnected, isConnecting } = useAccount();
   const isLoading = useSelector((state) => state.user.isLoading);
 
+  const user = useSelector((state) => state.user.user);
+  const { isConnected, isConnecting } = useAccount();
+  const isLoading = useSelector((state) => state.user.isLoading);
+
   return (
     <div className="max-w-sm mx-auto space-y-5">
+      <div className="flex flex-col gap-3">
+        {isConnected && user && (
+          <>
+            <MinervaText
+              text="Choose your agent’s decision-making and how your agent should gather insights and vote in DAOs."
+              height={85}
+            />
+
+            <Link
+              href="/create-agent/twitter"
+              className="block w-full bg-gray-100 mt-2 text-black py-2.5 rounded-xl text-sm hover:bg-gray-300 transition-colors"
+            >
+              Twitter
+            </Link>
       <div className="flex flex-col gap-3">
         {isConnected && user && (
           <>

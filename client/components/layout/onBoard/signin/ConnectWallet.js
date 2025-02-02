@@ -1,33 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button } from "@heroui/react";
-import Link from "next/link";
+import React from "react";
+import Image from "next/image";
+import { usePrivy } from "@privy-io/react-auth";
 
 const ConnectWallet = () => {
-  const [connected, setConnected] = useState(false);
-
-  const handleConnect = () => {
-    setConnected(true);
-  };
+  const { ready, connectWallet } = usePrivy();
 
   return (
-    <div>
-      {connected ? (
-        <Link href="/select-agent-type" className="link-btn">
-          Continue
-        </Link>
-      ) : (
-        <>
-          <Button
-            className="w-full text-black bg-gray-100"
-            block
-            onPress={handleConnect}
-          >
-            Connect Wallet
-          </Button>
-        </>
-      )}
+    <div
+      className="bg-white hover:bg-gray-50 rounded-xl flex items-center p-4 gap-4 transition-all duration-200 cursor-pointer border-3 hover:border-blue-600"
+      onClick={() => {
+        if (ready) {
+          connectWallet();
+        }
+      }}
+      style={{
+        opacity: ready ? 1 : 0.5,
+      }}
+    >
+      <div className="bg-gray-200 rounded-lg flex items-center justify-center p-2">
+        <Image src="/icons3d/wallet.png" alt="avatar" width={40} height={40} />
+      </div>
+
+      <div className="flex flex-col text-left">
+        <p className="text-black text-md font-bold">Connect Wallet</p>
+        <p className="text-black/50 text-xs">
+          Choose your preferred wallet to continue. <br /> Powered by Privy
+        </p>
+      </div>
     </div>
   );
 };

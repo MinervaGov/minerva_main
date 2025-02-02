@@ -4,9 +4,9 @@ import PageContainer from "@/components/layout/onBoard/PageContainer";
 const SignInPage = () => {
   return (
     <PageContainer
-      heading="Sign In Account"
+      heading="Setup Profile"
       subHeading="Connect your wallet to access your account and manage your agent."
-      paragraph="Create your DAO agent"
+      paragraph="Access your account"
     >
       <SignIn />
     </PageContainer>

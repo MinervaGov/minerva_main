@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LockIcon, UnlockIcon } from "lucide-react";
 import { Button, Select, SelectItem, Switch } from "@heroui/react";
 
-import SignInAvatar from "../signin/SignInAvatar";
+import SignInAvatar from "../signin/MinervaText";
 
 const DAOList = [
   {

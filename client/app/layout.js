@@ -1,21 +1,15 @@
 import { Toaster } from "sonner";
-import localFont from "next/font/local";
+import { Space_Grotesk } from "next/font/google";
 
 import "./globals.css";
 
 import UiProvider from "@/providers/UiProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
+import Privy from "@/providers/Privy";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["variable"],
 });
 
 export const metadata = {
@@ -27,14 +21,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${spaceGrotesk.className} antialiased`}
+        suppressHydrationWarning
       >
-        <ReduxProvider>
-          <UiProvider>
-            {children}
-            <Toaster theme="dark" />
-          </UiProvider>
-        </ReduxProvider>
+        <Privy>
+          <ReduxProvider>
+            <UiProvider>
+              {children}
+              <Toaster theme="dark" />
+            </UiProvider>
+          </ReduxProvider>
+        </Privy>
       </body>
     </html>
   );

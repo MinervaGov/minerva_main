@@ -1,13 +1,11 @@
 import React from "react";
 import Link from "next/link";
 
-import SignInAvatar from "./SignInAvatar";
+import SignInAvatar from "./MinervaText";
 
 const SelectBotType = () => {
   return (
     <div className="max-w-sm mx-auto space-y-5">
-      <SignInAvatar />
-
       <div className="space-y-3">
         <Link
           href="/create-agent"

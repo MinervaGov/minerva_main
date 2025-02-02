@@ -8,7 +8,7 @@ const createUser = async (req, res) => {
   try {
     const { walletAddress, chainId, signature } = req.body;
 
-    let name = "";
+    let name = req.body.name;
 
     if (!walletAddress || !chainId || !signature) {
       return res.json({
@@ -65,7 +65,11 @@ const createUser = async (req, res) => {
     return res.json({
       success: true,
       message: "User created successfully",
-      user,
+      user: {
+        walletAddress: walletAddress,
+        name: name,
+        id: user,
+      },
     });
   } catch (error) {
     return res.json({

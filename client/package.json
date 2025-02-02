@@ -13,14 +13,17 @@
   },
   "dependencies": {
     "@heroui/react": "^2.6.14",
+    "@privy-io/react-auth": "^2.2.1",
+    "@privy-io/wagmi": "^1.0.2",
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/react-slot": "^1.1.1",
     "@reduxjs/toolkit": "^2.5.1",
-    "@tanstack/react-query": "^5.60.5",
+    "@tanstack/react-query": "^5.66.0",
     "axios": "^1.7.7",
     "boring-avatars": "^1.11.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "ethers": "5.7.2",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.469.0",
     "next": "15.1.0",
@@ -30,7 +33,8 @@
     "react-redux": "^9.2.0",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "wagmi": "^2.14.9"
   },
   "devDependencies": {
     "@types/node": "^20",

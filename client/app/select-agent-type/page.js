@@ -7,7 +7,7 @@ const CreateAgentPage = () => {
   return (
     <PageContainer
       heading="Lead or Delegate?"
-      subHeading="Do you want to create a new voting bot or delegate to an existing one?"
+      subHeading="Create a new personalized agent or delegate to an existing one"
       paragraph="Choose Your Path"
     >
       <SelectBotType />

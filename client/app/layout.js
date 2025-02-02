@@ -6,6 +6,7 @@ import "./globals.css";
 import UiProvider from "@/providers/UiProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
 import Privy from "@/providers/Privy";
+import UserProvider from "@/providers/UserProvider";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -26,10 +27,12 @@ export default function RootLayout({ children }) {
       >
         <Privy>
           <ReduxProvider>
-            <UiProvider>
-              {children}
-              <Toaster theme="dark" />
-            </UiProvider>
+            <UserProvider>
+              <UiProvider>
+                {children}
+                <Toaster theme="dark" />
+              </UiProvider>
+            </UserProvider>
           </ReduxProvider>
         </Privy>
       </body>

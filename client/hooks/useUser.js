@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useAccount } from "wagmi";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/slice/userSlice";
+import { setIsLoading, setUser } from "@/redux/slice/userSlice";
 import { toast } from "sonner";
 import { useEthersSigner } from "@/lib/ethersSigner";
 
@@ -12,6 +12,7 @@ export default function useUser() {
   const signer = useEthersSigner();
 
   const fetchUserProfile = async () => {
+    dispatch(setIsLoading(true));
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/users/${address}`
@@ -25,6 +26,8 @@ export default function useUser() {
     } catch (error) {
       dispatch(setUser(null));
       console.log(error);
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 

@@ -7,7 +7,7 @@ const CreateAgentPage = () => {
   return (
     <PageContainer
       heading="Set Up Your Agent"
-      subHeading="Choose your bot’s decision-making and how your bot should gather insights and vote in DAOs."
+      subHeading="Choose between Twitter or Tag based agent or import an existing agent."
       paragraph="Build Your AI Ally"
     >
       <CreateAgent />

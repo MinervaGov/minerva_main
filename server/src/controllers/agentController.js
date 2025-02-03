@@ -9,6 +9,7 @@ import daos from "../utils/daoConfig.js";
 import tagList from "../utils/tagList.js";
 import { checkProfile, getTwitterPosts } from "../utils/twitter.js";
 import { createTwitterCharacterProfile } from "../utils/openai.js";
+import { setNamestoneDomain } from "../utils/nameStone.js";
 
 const createAgent = async (req, res) => {
   try {
@@ -32,7 +33,6 @@ const createAgent = async (req, res) => {
       !name ||
       !daoId ||
       !profileType ||
-      !visibility ||
       !delayPeriod ||
       !walletAddress ||
       !chainId ||
@@ -65,8 +65,8 @@ const createAgent = async (req, res) => {
         { name: "name", type: "string" },
         { name: "daoId", type: "string" },
         { name: "profileType", type: "string" },
-        { name: "visibility", type: "string" },
-        { name: "delayPeriod", type: "number" },
+        { name: "visibility", type: "bool" },
+        { name: "delayPeriod", type: "uint256" },
         { name: "walletAddress", type: "address" },
       ],
     };
@@ -103,7 +103,7 @@ const createAgent = async (req, res) => {
       });
     }
 
-    const { id } = await createPrivyWallet();
+    const { id, address } = await createPrivyWallet();
 
     let twitterProfile = undefined;
 
@@ -132,7 +132,7 @@ const createAgent = async (req, res) => {
         });
       }
 
-      if (tags.length >= 2 || tags.length <= 5) {
+      if (tags.length < 2 || tags.length > 5) {
         return res.json({
           success: false,
           message: "Tags must be between 2 and 5",
@@ -187,12 +187,14 @@ const createAgent = async (req, res) => {
       privyWalletId: id,
       daoId,
       profileType,
-      visibility,
-      delayPeriod,
+      visibility: visibility === "true" ? "public" : "private",
+      delayPeriod: parseInt(delayPeriod),
       tags,
       importProfile,
       twitterProfile,
     });
+
+    await setNamestoneDomain(name, address);
 
     return res.json({
       success: true,
@@ -245,7 +247,7 @@ const getAgentByAgentName = async (req, res) => {
   try {
     const { agentName } = req.params;
 
-    const agent = await getAgentByName(agentName);
+    const agent = await getAgentByName(agentName.toLowerCase());
 
     if (!agent) {
       return res.json({

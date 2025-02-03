@@ -3,19 +3,19 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const scraper = new Scraper();
+
+await scraper.login(
+  process.env.TWITTER_USERNAME,
+  process.env.TWITTER_PASSWORD,
+  process.env.TWITTER_EMAIL,
+  process.env.TWITTER_API_KEY,
+  process.env.TWITTER_API_SECRET_KEY,
+  process.env.TWITTER_ACCESS_TOKEN,
+  process.env.TWITTER_ACCESS_TOKEN_SECRET
+);
+
 const getTwitterPosts = async (twitterId, maxTweets = 10) => {
-  const scraper = new Scraper();
-
-  await scraper.login(
-    process.env.TWITTER_USERNAME,
-    process.env.TWITTER_PASSWORD,
-    process.env.TWITTER_EMAIL,
-    process.env.TWITTER_API_KEY,
-    process.env.TWITTER_API_SECRET_KEY,
-    process.env.TWITTER_ACCESS_TOKEN,
-    process.env.TWITTER_ACCESS_TOKEN_SECRET
-  );
-
   const tweetsGenerator = scraper.getTweets(twitterId, maxTweets);
   const tweets = [];
 

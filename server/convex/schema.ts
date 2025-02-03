@@ -24,7 +24,25 @@ export default defineSchema({
     twitterProfile: v.optional(
       v.object({
         twitterId: v.string(),
-        charProfile: v.string(),
+        charProfile: v.object({
+          username: v.string(),
+          sentiment: v.string(),
+          emotional_tone: v.string(),
+          personality_traits: v.object({
+            openness: v.string(),
+            conscientiousness: v.string(),
+            extraversion: v.string(),
+            agreeableness: v.string(),
+            neuroticism: v.string(),
+          }),
+          communication_style: v.object({
+            formality: v.string(),
+            emoji_usage: v.string(),
+            sarcasm: v.boolean(),
+          }),
+          interest_categories: v.array(v.string()),
+          engagement_level: v.string(),
+        }),
       })
     ),
     tags: v.optional(v.array(v.string())),

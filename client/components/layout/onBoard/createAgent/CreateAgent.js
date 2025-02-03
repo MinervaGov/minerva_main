@@ -11,6 +11,7 @@ import { Button, Input } from "@heroui/react";
 import { setAgentName } from "@/redux/slice/setupSlice";
 import useAgent from "@/hooks/useAgent";
 import { useRef, useEffect } from "react";
+import { toast } from "sonner";
 
 const CreateAgent = () => {
   const user = useSelector((state) => state.user.user);
@@ -37,6 +38,7 @@ const CreateAgent = () => {
     if (isValid) {
       setIsValid(true);
       setIsValidating(false);
+      toast.error("Agent name is taken, please try another name.");
       return;
     }
 
@@ -92,16 +94,10 @@ const CreateAgent = () => {
             <Button
               className="w-full text-black bg-gray-100"
               block
-              isDisabled={
-                !agentName ||
-                isValid ||
-                isValidating ||
-                agentName.length < 3 ||
-                isTyping
-              }
+              isDisabled={!agentName || isValid || isValidating || isTyping}
               onPress={() => setStep(1)}
             >
-              Next
+              {isTyping || isValidating ? "Checking..." : "Next"}
             </Button>
           </>
         )}

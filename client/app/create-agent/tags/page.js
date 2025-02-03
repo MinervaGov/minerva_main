@@ -6,8 +6,8 @@ import TagsAgent from "@/components/layout/onBoard/createAgent/TagsAgent";
 const CreateAgentPage = () => {
   return (
     <PageContainer
-      heading="Set Up Your Agent"
-      subHeading="Choose your bot’s decision-making and how your bot should gather insights and vote in DAOs."
+      heading="Tag based Agent"
+      subHeading="Give Minerva a list of tags and she will vote on proposals based on the tags."
       paragraph="Build Your AI Ally"
     >
       <TagsAgent />

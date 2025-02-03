@@ -4,10 +4,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const createPrivyWallet = async () => {
-  const privy = new PrivyClient({
-    appId: process.env.PRIVY_APP_ID,
-    secret: process.env.PRIVY_APP_SECRET,
-  });
+  const privy = new PrivyClient(
+    process.env.PRIVY_APP_ID,
+    process.env.PRIVY_APP_SECRET
+  );
 
   const { id, address, chainType } = await privy.walletApi.create({
     chainType: "ethereum",

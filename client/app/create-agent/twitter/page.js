@@ -8,7 +8,7 @@ const CreateAgentPage = () => {
     <PageContainer
       heading="Power Up with Twitter"
       subHeading="Connect your Twitter to train your bot based on your profile activity."
-      paragraph="Tweets Shape Your Governance."
+      paragraph="Tweets Shape Your Governance"
     >
       <TwitterAgent />
     </PageContainer>

@@ -21,7 +21,7 @@ export const createAgent = mutation({
       twitterProfile: v.optional(
         v.object({
           twitterId: v.string(),
-          charProfile: v.string(),
+          charProfile: v.any(),
         })
       ),
       tags: v.optional(v.array(v.string())),

@@ -123,7 +123,7 @@ const CreateAgent = () => {
             </Link>
 
             <Link
-              href="/create-agent/import"
+              href="/agent-gallery"
               className="block w-full bg-gray-100 text-black py-2.5 rounded-xl text-sm hover:bg-gray-300 transition-colors"
             >
               Import

@@ -1,13 +1,16 @@
 const daos = [
   {
     id: "arbitrum",
+    snapshotSpace: "minervagov.eth",
   },
-  {
-    id: "lido",
-  },
-  {
-    id: "aave",
-  },
+  // {
+  //   id: "lido",
+  //   snapshotSpace: "lido",
+  // },
+  // {
+  //   id: "aave",
+  //   snapshotSpace: "aave",
+  // },
 ];
 
 export default daos;

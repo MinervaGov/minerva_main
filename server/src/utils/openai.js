@@ -48,4 +48,22 @@ const createTwitterCharacterProfile = async (twitterPosts) => {
   return profile;
 };
 
-export { createTwitterCharacterProfile };
+const summarizeProposal = async (proposal) => {
+  const completion = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: "system",
+        content: `You summarize a proposal.`,
+      },
+      {
+        role: "user",
+        content: `Summarize the following proposal: ${proposal}`,
+      },
+    ],
+  });
+
+  return completion.choices[0].message.content;
+};
+
+export { createTwitterCharacterProfile, summarizeProposal };

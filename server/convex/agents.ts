@@ -164,3 +164,45 @@ export const getAgentByName = query({
     return agent;
   },
 });
+
+export const getAgentsByDaoId = query({
+  args: {
+    api_key: v.string(),
+    daoId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, daoId } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const agents = await ctx.db
+      .query("agents")
+      .withIndex("by_dao", (q) => q.eq("daoId", daoId))
+      .collect();
+
+    return agents;
+  },
+});
+
+export const getAgentsByUserId = query({
+  args: {
+    api_key: v.string(),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, userId } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const agents = await ctx.db
+      .query("agents")
+      .withIndex("by_created_by", (q) => q.eq("createdBy", userId))
+      .collect();
+
+    return agents;
+  },
+});

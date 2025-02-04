@@ -41,4 +41,75 @@ const getAgentByName = async (name) => {
     name,
   });
 };
-export { addUser, getUserByAddress, createNewAgent, getAgentByName };
+
+const addProposal = async (Proposal) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.Proposals.createProposal, {
+    api_key: process.env.CONVEX_API_KEY,
+    Proposal,
+  });
+};
+
+const addBulkDecision = async (proposalId, agentIds, status = "pending") => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.Decisions.createBulkDecision, {
+    api_key: process.env.CONVEX_API_KEY,
+    proposalId,
+    agentIds,
+    status,
+  });
+};
+
+const getAgentsByDaoId = async (daoId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.agents.getAgentsByDaoId, {
+    api_key: process.env.CONVEX_API_KEY,
+    daoId,
+  });
+};
+
+const getAgentsByUserId = async (userId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.agents.getAgentsByUserId, {
+    api_key: process.env.CONVEX_API_KEY,
+    userId,
+  });
+};
+
+const getAgentByVisibilityStatus = async (status) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.agents.getAgentsByVisibility, {
+    api_key: process.env.CONVEX_API_KEY,
+    status,
+  });
+};
+
+const changeDecisionStatus = async (decisionId, status) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  console.log(decisionId, status);
+
+  return await client.mutation(api.Decisions.changeDecisionStatus, {
+    api_key: process.env.CONVEX_API_KEY,
+    decisionId,
+    status,
+  });
+};
+
+export {
+  addUser,
+  getUserByAddress,
+  createNewAgent,
+  getAgentByName,
+  addProposal,
+  addBulkDecision,
+  getAgentsByDaoId,
+  getAgentsByUserId,
+  getAgentByVisibilityStatus,
+  changeDecisionStatus,
+};

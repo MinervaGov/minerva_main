@@ -2,6 +2,8 @@ import { ethers } from "ethers";
 import {
   createNewAgent,
   getAgentByName,
+  getAgentByVisibilityStatus,
+  getAgentsByUserId,
   getUserByAddress,
 } from "../utils/convex.js";
 import { createPrivyWallet } from "../utils/privy.js";
@@ -269,6 +271,44 @@ const getAgentByAgentName = async (req, res) => {
   }
 };
 
+const getAgentByVisibility = async (req, res) => {
+  try {
+    const { status } = req.params;
+
+    const agents = await getAgentByVisibilityStatus(status);
+
+    return res.json({
+      success: true,
+      agents,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      message: "Error getting agent by visibility",
+      error: error.message,
+    });
+  }
+};
+
+const getAgentsByUserID = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const agents = await getAgentsByUserId(userId);
+
+    return res.json({
+      success: true,
+      agents,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      message: "Error getting agents by user ID",
+      error: error.message,
+    });
+  }
+};
+
 const testTwitterCharacterProfile = async (req, res) => {
   const twitterPosts = await getTwitterPosts("Anoyroyc");
   const characterProfile = await createTwitterCharacterProfile(twitterPosts);
@@ -282,4 +322,6 @@ export {
   testTwitterCharacterProfile,
   checkTwitterProfile,
   getAgentByAgentName,
+  getAgentByVisibility,
+  getAgentsByUserID,
 };

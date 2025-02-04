@@ -65,4 +65,30 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_agent", ["agentId"]),
+  Proposals: defineTable({
+    snapshotId: v.string(),
+    daoId: v.string(),
+    title: v.string(),
+    description: v.string(),
+    aiSummary: v.optional(v.string()),
+    choices: v.array(v.string()),
+    endDate: v.number(),
+  })
+    .index("by_dao", ["daoId"])
+    .index("by_snapshot_id", ["snapshotId"]),
+  Decisions: defineTable({
+    proposalId: v.id("Proposals"),
+    agentId: v.id("agents"),
+    primaryDecision: v.optional(v.string()),
+    primaryReason: v.optional(v.string()),
+    FinalDecision: v.optional(v.string()),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("completed"),
+      v.literal("failed")
+    ),
+  })
+    .index("by_proposal", ["proposalId"])
+    .index("by_agent", ["agentId"])
+    .index("by_status", ["status"]),
 });

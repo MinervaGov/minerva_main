@@ -3,6 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import userRoutes from "./routes/userRoute.js";
 import agentRoutes from "./routes/agentRoute.js";
+import redis from "./utils/redis.js";
+import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
+
 // Load environment variables
 dotenv.config();
 
@@ -19,6 +22,18 @@ app.use("/api/agents", agentRoutes);
 
 app.get("/", (req, res) => {
   res.send("Minerva Backend is running 🚀");
+});
+
+// Redis connection
+redis.on("connect", async () => {
+  console.log("Successfully connected to Redis");
+
+  await loadDaoProposals();
+  listenForProposals();
+});
+
+redis.on("error", (err) => {
+  console.error("Redis connection error:", err);
 });
 
 // Start server

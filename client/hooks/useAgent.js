@@ -18,6 +18,32 @@ export default function useAgent() {
     return response.data.success;
   };
 
+  const fetchUserAllAgents = async (userId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/agents/by-user/${userId}`
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch user agents:", error);
+      return [];
+    }
+  };
+
+  const fetchAgentsByVisibility = async (status) => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/agents/by-visibility/${status}`
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch agents by visibility:", error);
+      return [];
+    }
+  };
+
   const isValidAgentName = async (agentName) => {
     if (agentName.length < 3) {
       return false;
@@ -171,6 +197,8 @@ export default function useAgent() {
   };
 
   return {
+    fetchUserAllAgents,
+    fetchAgentsByVisibility,
     checkTwitterProfile,
     isValidAgentName,
     createAgentWithTwitter,

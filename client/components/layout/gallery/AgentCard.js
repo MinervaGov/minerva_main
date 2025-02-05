@@ -7,7 +7,10 @@ import BotAvatar from "./BotAvatar";
 
 const AgentCard = () => {
   return (
-    <Card isFooterBlurred className="pt-4 w-fit">
+    <Card
+      isFooterBlurred
+      className="pt-4 w-fit border border-transparent hover:border-white/40 transition-colors"
+    >
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
         <p className="text-tiny uppercase font-bold">By: Anoy B3t1</p>
         <small className="text-default-500">Bot Id: 3k132</small>

@@ -101,6 +101,23 @@ const changeDecisionStatus = async (decisionId, status) => {
   });
 };
 
+const getDecisionsByAgentId = async (agentId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.Decisions.getDecisionsByAgentId, {
+    api_key: process.env.CONVEX_API_KEY,
+    agentId,
+  });
+};
+
+const getProposalById = async (proposalId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.Proposals.getProposalById, {
+    api_key: process.env.CONVEX_API_KEY,
+    proposalId,
+  });
+};
 export {
   addUser,
   getUserByAddress,
@@ -112,4 +129,6 @@ export {
   getAgentsByUserId,
   getAgentByVisibilityStatus,
   changeDecisionStatus,
+  getDecisionsByAgentId,
+  getProposalById,
 };

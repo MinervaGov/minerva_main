@@ -58,7 +58,7 @@ const fetchDaoData = async (daoId) => {
   const proposals = response.data.data.proposals;
 
   if (proposals.length === 0) {
-    throw new Error("No proposals found");
+    return null;
   }
 
   return proposals[0];

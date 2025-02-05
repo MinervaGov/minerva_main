@@ -8,7 +8,7 @@ export const createBulkDecision = mutation({
     agentIds: v.array(v.id("agents")),
     status: v.union(
       v.literal("pending"),
-      v.literal("completed"),
+      v.literal("decided"),
       v.literal("failed")
     ),
   },
@@ -39,7 +39,7 @@ export const changeDecisionStatus = mutation({
     decisionId: v.id("Decisions"),
     status: v.union(
       v.literal("pending"),
-      v.literal("completed"),
+      v.literal("decided"),
       v.literal("failed")
     ),
   },
@@ -53,5 +53,26 @@ export const changeDecisionStatus = mutation({
     await ctx.db.patch(decisionId, {
       status,
     });
+  },
+});
+
+export const getDecisionsByAgentId = query({
+  args: {
+    api_key: v.string(),
+    agentId: v.id("agents"),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, agentId } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const decisions = await ctx.db
+      .query("Decisions")
+      .withIndex("by_agent", (q) => q.eq("agentId", agentId))
+      .collect();
+
+    return decisions;
   },
 });

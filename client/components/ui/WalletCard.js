@@ -10,29 +10,54 @@ import {
 import React from "react";
 import Avatar from "boring-avatars";
 import { useAccount, useDisconnect } from "wagmi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { usePrivy } from "@privy-io/react-auth";
 
 import shortenAddress from "../../utils/shortenAddress";
 import { setUser } from "@/redux/slice/userSlice";
+import { useRouter } from "next/navigation";
 
 const WalletCard = () => {
   const account = useAccount();
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.user.isLoading);
+  const user = useSelector((state) => state.user.user);
+  const router = useRouter();
 
   const { disconnect } = useDisconnect();
   const { ready, connectWallet } = usePrivy();
 
   const walletAddress = ready ? account.address : "Loading...";
 
-  return account.status === "connected" ? (
+  if (isLoading) {
+    return (
+      <Button className="border border-gray-700 h-fit p-3 py-2 rounded-xl hover:border-gray-400">
+        <p>Loading...</p>
+      </Button>
+    );
+  }
+
+  if (account.status === "connected" && !user) {
+    return (
+      <Button
+        className="bg-white text-black"
+        onPress={() => {
+          router.push("/sign-in");
+        }}
+      >
+        Register
+      </Button>
+    );
+  }
+
+  return account.status === "connected" && user ? (
     <Dropdown>
       <DropdownTrigger>
-        <Button className="border border-gray-700 h-fit p-1.5 rounded-full hover:border-gray-400">
+        <Button className="border border-gray-700 h-fit p-3 py-2 rounded-xl hover:border-gray-400">
           <div className="flex items-center space-x-2">
-            <Avatar name={walletAddress} size={30} variant="beam" />
+            <Avatar name={walletAddress} size={24} variant="beam" />
 
-            <p>{ready ? shortenAddress(walletAddress) : walletAddress}</p>
+            <p>{ready && user.name}</p>
           </div>
         </Button>
       </DropdownTrigger>
@@ -46,6 +71,9 @@ const WalletCard = () => {
           }
         }}
       >
+        <DropdownItem key="Profile" className="" color="default">
+          Your Profile
+        </DropdownItem>
         <DropdownItem key="disconnect" className="text-danger" color="danger">
           Disconnect
         </DropdownItem>

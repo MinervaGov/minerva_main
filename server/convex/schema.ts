@@ -13,6 +13,7 @@ export default defineSchema({
     imageType: v.optional(v.string()),
     createdBy: v.id("users"),
     privyWalletId: v.string(),
+    walletAddress: v.string(),
     daoId: v.string(),
     profileType: v.union(
       v.literal("twitter"),
@@ -84,7 +85,7 @@ export default defineSchema({
     FinalDecision: v.optional(v.string()),
     status: v.union(
       v.literal("pending"),
-      v.literal("completed"),
+      v.literal("decided"),
       v.literal("failed")
     ),
   })

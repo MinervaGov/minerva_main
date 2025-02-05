@@ -4,6 +4,7 @@ import {
   getAgentByName,
   getAgentByVisibilityStatus,
   getAgentsByUserId,
+  getDecisionsByAgentId,
   getUserByAddress,
 } from "../utils/convex.js";
 import { createPrivyWallet } from "../utils/privy.js";
@@ -191,6 +192,7 @@ const createAgent = async (req, res) => {
       profileType,
       visibility: visibility === "true" ? "public" : "private",
       delayPeriod: parseInt(delayPeriod),
+      walletAddress: address,
       tags,
       importProfile,
       twitterProfile,
@@ -317,6 +319,25 @@ const testTwitterCharacterProfile = async (req, res) => {
   });
 };
 
+const getDecisions = async (req, res) => {
+  try {
+    const { agentId } = req.params;
+
+    const decisions = await getDecisionsByAgentId(agentId);
+
+    return res.json({
+      success: true,
+      decisions,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      message: "Error getting decisions",
+      error: error.message,
+    });
+  }
+};
+
 export {
   createAgent,
   testTwitterCharacterProfile,
@@ -324,4 +345,5 @@ export {
   getAgentByAgentName,
   getAgentByVisibility,
   getAgentsByUserID,
+  getDecisions,
 };

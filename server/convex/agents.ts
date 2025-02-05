@@ -10,6 +10,7 @@ export const createAgent = mutation({
       imageType: v.optional(v.string()),
       createdBy: v.id("users"),
       privyWalletId: v.string(),
+      walletAddress: v.string(),
       daoId: v.string(),
       profileType: v.union(
         v.literal("twitter"),
@@ -49,6 +50,7 @@ export const createAgent = mutation({
       imageUrl: agent.imageUrl,
       imageType: agent.imageType,
       privyWalletId: agent.privyWalletId,
+      walletAddress: agent.walletAddress,
       daoId: agent.daoId,
       profileType: agent.profileType,
       visibility: agent.visibility,

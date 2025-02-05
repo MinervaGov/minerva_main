@@ -20,7 +20,7 @@ export default function UserProvider({ children }) {
     if (pathname === "/" || pathname === "/sign-in") return;
 
     fetchUserProfile();
-  }, [isConnected, user, pathname]);
+  }, [isConnected, pathname]);
 
   return <>{children}</>;
 }

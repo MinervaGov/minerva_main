@@ -37,3 +37,21 @@ export const createProposal = mutation({
     });
   },
 });
+
+export const getProposalById = query({
+  args: {
+    api_key: v.string(),
+    proposalId: v.id("Proposals"),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, proposalId } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const proposal = await ctx.db.get(proposalId);
+
+    return proposal;
+  },
+});

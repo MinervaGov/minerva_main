@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 
 import DAOSelect from "./DAOSelect";
 import PrivateModeSwitch from "./PrivateModeSwitch";

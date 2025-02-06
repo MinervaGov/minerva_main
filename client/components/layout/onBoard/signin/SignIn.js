@@ -4,7 +4,7 @@ import { Input } from "@heroui/react";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import ConnectWallet from "./ConnectWallet";
-import { setUser, setUserUsername } from "@/redux/slice/userSlice";
+import { setUser } from "@/redux/slice/userSlice";
 import MinervaText from "./MinervaText";
 import { useAccount, useDisconnect } from "wagmi";
 import { usePrivy } from "@privy-io/react-auth";

@@ -5,6 +5,9 @@ const initialState = {
   decisions: null,
   selectedDecision: null,
   isLoading: false,
+  votingPower: null,
+  delegates: null,
+  isDelegating: false,
 };
 
 const agentSlice = createSlice({
@@ -29,6 +32,18 @@ const agentSlice = createSlice({
       state.isLoading = action.payload;
     },
 
+    setVotingPower: (state, action) => {
+      state.votingPower = action.payload;
+    },
+
+    setDelegates: (state, action) => {
+      state.delegates = action.payload;
+    },
+
+    setIsDelegating: (state, action) => {
+      state.isDelegating = action.payload;
+    },
+
     clearAll: (state) => {
       state.agent = null;
       state.decisions = [];
@@ -44,6 +59,9 @@ export const {
   setAgent,
   setIsLoading,
   clearAll,
+  setVotingPower,
+  setDelegates,
+  setIsDelegating,
 } = agentSlice.actions;
 
 export default agentSlice.reducer;

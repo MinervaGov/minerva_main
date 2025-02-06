@@ -4,6 +4,7 @@ const daos = [
     snapshotSpace: "minervagov.eth",
     logo: "/dao/arb-logo.png",
     name: "Arbitrum",
+    chainId: 42161,
   },
   // {
   //   id: "lido",

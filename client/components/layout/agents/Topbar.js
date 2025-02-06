@@ -1,15 +1,18 @@
 "use client";
 
 import WalletCard from "@/components/ui/WalletCard";
-import { Check, Loader2, Smile, UserPlus, Users, Vote } from "lucide-react";
+import { Check, Loader2, UserPlus, Users, Vote } from "lucide-react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import daos from "@/utils/daoConfig";
+import DelegateButton from "./DelegateButton";
 
 export default function TopBar() {
   const agent = useSelector((state) => state.agent.agent);
   const isLoading = useSelector((state) => state.agent.isLoading);
   const dao = agent ? daos.find((dao) => dao.id === agent.daoId) : null;
+  const votingPower = useSelector((state) => state.agent.votingPower);
+
   const isFollowing = false;
   return (
     <div className="w-full border-b gap-7 border-gray-700 flex flex-col px-6 py-8 pb-7">
@@ -27,7 +30,7 @@ export default function TopBar() {
           <div className="mx-2 border-l h-8 border-gray-700"></div>
 
           <div
-            className="flex relative hover:cursor-pointer hover:text-blue-300"
+            className="flex relative hover:cursor-pointer hover:text-blue-300 grayscale hover:grayscale-0"
             onClick={() => {
               if (agent) {
                 window.open(
@@ -52,7 +55,7 @@ export default function TopBar() {
                   alt="logo"
                   width={20}
                   height={20}
-                  className="rounded-full absolute -right-7 top-2 grayscale"
+                  className="rounded-full absolute -right-7 top-2"
                 />
               </>
             )}
@@ -65,21 +68,24 @@ export default function TopBar() {
         <div className="flex gap-5 items-center ml-1 text-sm text-gray-300">
           <div className="flex gap-2 items-center ">
             <Vote className="w-5 h-5" />
-            <p className="font-bold">100000</p>
+            <p className="font-bold">
+              {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+              {!isLoading && (votingPower ? votingPower.toString() : "0")}
+            </p>
             <p className="">Voting Power</p>
           </div>
 
           <div className="flex gap-2 items-center">
             <Users className="w-5 h-5" />
             <p className="font-bold">3</p>
-            <p className="">members</p>
+            <p className="">Followers</p>
           </div>
 
-          <div className="flex gap-2 items-center">
+          {/* <div className="flex gap-2 items-center">
             <Smile className="w-5 h-5" />
             <p className="font-bold">5</p>
             <p className="">Followers</p>
-          </div>
+          </div> */}
         </div>
         <div className="flex gap-4 items-center text-sm">
           <div className="flex gap-2 items-center">
@@ -112,10 +118,7 @@ export default function TopBar() {
             </div>
           )}
 
-          <div className="flex gap-2 items-center text-blue-300 cursor-pointer hover:text-blue-400">
-            <UserPlus className="w-5 h-5" />
-            <p>Delegate</p>
-          </div>
+          <DelegateButton />
         </div>
       </div>
     </div>

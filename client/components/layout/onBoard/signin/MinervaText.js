@@ -1,10 +1,7 @@
 "use client";
 
 import React from "react";
-import Avatar from "boring-avatars";
-import { useSelector } from "react-redux";
 import { textToArray } from "@/lib/textToArray";
-import CopyToClipboard from "@/components/ui/CopyToClipboard";
 import Image from "next/image";
 import { TypewriterEffect } from "@/components/ui/typewriter-effect";
 

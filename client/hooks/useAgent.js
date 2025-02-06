@@ -27,7 +27,7 @@ export default function useAgent() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/agents/by-user/${userId}`
       );
-      console.log(response.data);
+
       if (response.data.success) {
         dispatch(setMyAgents(response.data.agents));
       } else {
@@ -43,8 +43,6 @@ export default function useAgent() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/agents/by-visibility/public`
       );
-
-      console.log(response.data);
 
       if (response.data.success) {
         dispatch(setAllAgents(response.data.agents));

@@ -13,7 +13,6 @@ import { useAccount, useDisconnect } from "wagmi";
 import { useDispatch, useSelector } from "react-redux";
 import { usePrivy } from "@privy-io/react-auth";
 
-import shortenAddress from "../../utils/shortenAddress";
 import { setUser } from "@/redux/slice/userSlice";
 import { useRouter } from "next/navigation";
 
@@ -71,9 +70,9 @@ const WalletCard = () => {
           }
         }}
       >
-        <DropdownItem key="Profile" className="" color="default">
+        {/* <DropdownItem key="Profile" className="" color="default">
           Your Profile
-        </DropdownItem>
+        </DropdownItem> */}
         <DropdownItem key="disconnect" className="text-danger" color="danger">
           Disconnect
         </DropdownItem>

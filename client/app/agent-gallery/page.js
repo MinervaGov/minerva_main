@@ -4,25 +4,20 @@ import Logo from "../../components/ui/Logo";
 import WalletCard from "../../components/ui/WalletCard";
 
 import UserAgents from "../../components/layout/gallery/UserAgents";
-
+import CreateAgentButton from "../../components/ui/CreateAgentButton";
 const AgentGalleyPage = () => {
   return (
-    <div className="p-6 min-h-screen">
+    <div className="min-h-screen px-6 py-7">
       <nav className="flex justify-between items-center">
         <Logo />
-        <WalletCard />
+        <div className="flex items-center gap-2">
+          <CreateAgentButton />
+          <WalletCard />
+        </div>
       </nav>
 
-      <div className="space-y-8 mt-8">
+      <div className="mt-7">
         <UserAgents />
-
-        {/* <section className="bg-white/5 p-4 rounded-xl space-y-5">
-          <h1 className="text-3xl font-bold text-gray-100 ml-4 mt-4">
-            Public Agents
-          </h1>
-
-          <AgentCardList />
-        </section> */}
       </div>
     </div>
   );

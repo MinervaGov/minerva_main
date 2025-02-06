@@ -3,7 +3,12 @@
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import { setAgent, setDecisions, setIsLoading } from "@/redux/slice/agentSlice";
+import {
+  setAgent,
+  setDecisions,
+  setIsLoading,
+  setSelectedDecision,
+} from "@/redux/slice/agentSlice";
 
 export default function useSelectAgent() {
   const dispatch = useDispatch();
@@ -11,6 +16,10 @@ export default function useSelectAgent() {
 
   const loadAgent = async () => {
     try {
+      dispatch(setSelectedDecision(null));
+      dispatch(setAgent(null));
+      dispatch(setDecisions([]));
+
       dispatch(setIsLoading(true));
 
       const response = await axios.get(

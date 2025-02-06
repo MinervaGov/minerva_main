@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   agent: null,
-  decisions: [],
+  decisions: null,
   selectedDecision: null,
   isLoading: false,
 };

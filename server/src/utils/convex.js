@@ -85,7 +85,7 @@ const getAgentByVisibilityStatus = async (status) => {
 
   return await client.query(api.agents.getAgentsByVisibility, {
     api_key: process.env.CONVEX_API_KEY,
-    status,
+    visibility: status,
   });
 };
 

@@ -25,7 +25,7 @@ export const TypewriterEffect = ({
   });
 
   const [scope, animate] = useAnimate();
-  const isInView = useInView(scope);
+  const isInView = true;
   useEffect(() => {
     if (isInView) {
       animate(

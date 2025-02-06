@@ -1,16 +1,17 @@
 import React from "react";
 import Image from "next/image";
 
-const Logo = ({ logoSize = 36, size = "text-lg" }) => {
+const Logo = ({}) => {
   return (
     <div className="flex items-center space-x-2">
       <Image
         src="/minerva.svg"
-        alt="Minerva logo"
-        width={logoSize}
-        height={logoSize}
+        alt="logo"
+        width={28}
+        height={28}
+        className="rounded-full"
       />
-      <p className={size}>Minerva</p>
+      <h1 className="text-2xl font-bold">Minerva</h1>
     </div>
   );
 };

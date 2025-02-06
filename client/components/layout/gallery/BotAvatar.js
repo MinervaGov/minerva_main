@@ -3,9 +3,9 @@ import Image from "next/image";
 import { createAvatar } from "@dicebear/core";
 import { loreleiNeutral } from "@dicebear/collection";
 
-const BotAvatar = ({ name = "minerva.eth" }) => {
+const BotAvatar = ({ name = "hi.minerva.eth", className }) => {
   const avatar = createAvatar(loreleiNeutral, {
-    seed: { name },
+    seed: name,
   });
 
   const dataUri = avatar.toDataUri();
@@ -13,9 +13,9 @@ const BotAvatar = ({ name = "minerva.eth" }) => {
   return (
     <Image
       src={dataUri}
-      className="object-cover rounded-lg"
-      height={200}
-      width={200}
+      className={`object-cover rounded-full ${className}`}
+      height={48}
+      width={48}
       alt="Bot avatar"
     />
   );

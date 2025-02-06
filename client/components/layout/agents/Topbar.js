@@ -26,7 +26,17 @@ export default function TopBar() {
 
           <div className="mx-2 border-l h-8 border-gray-700"></div>
 
-          <div className="flex flex-col relative">
+          <div
+            className="flex relative hover:cursor-pointer hover:text-blue-300"
+            onClick={() => {
+              if (agent) {
+                window.open(
+                  `https://app.ens.domains/${agent.name}.minervagov.eth`,
+                  "_blank"
+                );
+              }
+            }}
+          >
             {isLoading && !agent && (
               <Loader2 className="w-5 h-5 animate-spin" />
             )}
@@ -37,6 +47,13 @@ export default function TopBar() {
                 <p className="text-xs text-gray-400 absolute -bottom-4 right-0">
                   .minervagov.eth
                 </p>
+                <Image
+                  src="/dao/ens-logo.png"
+                  alt="logo"
+                  width={20}
+                  height={20}
+                  className="rounded-full absolute -right-7 top-2 grayscale"
+                />
               </>
             )}
           </div>

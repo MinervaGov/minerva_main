@@ -1,14 +1,17 @@
 "use client";
 
 import { useEthersSigner } from "@/lib/ethersSigner";
+import { setAllAgents, setMyAgents } from "@/redux/slice/gallerySlice";
 import tagList from "@/utils/tagList";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { useAccount } from "wagmi";
 
 export default function useAgent() {
   const { address, chainId } = useAccount();
   const signer = useEthersSigner();
+  const dispatch = useDispatch();
 
   const checkTwitterProfile = async (username) => {
     const response = await axios.get(
@@ -18,16 +21,38 @@ export default function useAgent() {
     return response.data.success;
   };
 
-  const fetchUserAllAgents = async (userId) => {
+  const fetchUserAgents = async (userId) => {
     try {
+      dispatch(setMyAgents([]));
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/agents/by-user/${userId}`
       );
-
-      return response.data;
+      console.log(response.data);
+      if (response.data.success) {
+        dispatch(setMyAgents(response.data.agents));
+      } else {
+        dispatch(setMyAgents([]));
+      }
     } catch (error) {
-      console.error("Failed to fetch user agents:", error);
-      return [];
+      dispatch(setMyAgents([]));
+    }
+  };
+
+  const fetchAllAgents = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/agents/by-visibility/public`
+      );
+
+      console.log(response.data);
+
+      if (response.data.success) {
+        dispatch(setAllAgents(response.data.agents));
+      } else {
+        dispatch(setAllAgents([]));
+      }
+    } catch (error) {
+      dispatch(setAllAgents([]));
     }
   };
 
@@ -197,7 +222,8 @@ export default function useAgent() {
   };
 
   return {
-    fetchUserAllAgents,
+    fetchUserAgents,
+    fetchAllAgents,
     fetchAgentsByVisibility,
     checkTwitterProfile,
     isValidAgentName,

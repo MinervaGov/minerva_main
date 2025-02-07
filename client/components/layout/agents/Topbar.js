@@ -19,6 +19,7 @@ export default function TopBar() {
   const followedAgents = useSelector((state) => state.user.followedAgents);
   const isFollowing =
     followedAgents &&
+    agent &&
     followedAgents.some((followedAgent) => followedAgent._id === agent._id);
 
   return (

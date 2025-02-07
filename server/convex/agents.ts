@@ -208,3 +208,21 @@ export const getAgentsByUserId = query({
     return agents;
   },
 });
+
+export const getAgentById = query({
+  args: {
+    api_key: v.string(),
+    agentId: v.id("agents"),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, agentId } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const agent = await ctx.db.get(agentId);
+
+    return agent;
+  },
+});

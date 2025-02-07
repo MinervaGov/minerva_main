@@ -76,3 +76,43 @@ export const getDecisionsByAgentId = query({
     return decisions;
   },
 });
+
+export const getDecisionById = query({
+  args: {
+    api_key: v.string(),
+    decisionId: v.id("Decisions"),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, decisionId } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const decision = await ctx.db.get(decisionId);
+
+    return decision;
+  },
+});
+
+export const setPrimaryDecision = mutation({
+  args: {
+    api_key: v.string(),
+    decisionId: v.id("Decisions"),
+    primaryDecision: v.string(),
+    primaryReason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, decisionId, primaryDecision, primaryReason } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    await ctx.db.patch(decisionId, {
+      primaryDecision,
+      primaryReason,
+      status: "decided",
+    });
+  },
+});

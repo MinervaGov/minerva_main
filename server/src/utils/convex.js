@@ -92,8 +92,6 @@ const getAgentByVisibilityStatus = async (status) => {
 const changeDecisionStatus = async (decisionId, status) => {
   const client = new ConvexHttpClient(process.env.CONVEX_URL);
 
-  console.log(decisionId, status);
-
   return await client.mutation(api.Decisions.changeDecisionStatus, {
     api_key: process.env.CONVEX_API_KEY,
     decisionId,
@@ -157,6 +155,39 @@ const getFollowedAgents = async (userId) => {
   });
 };
 
+const getDecisionById = async (decisionId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.Decisions.getDecisionById, {
+    api_key: process.env.CONVEX_API_KEY,
+    decisionId,
+  });
+};
+
+const getAgentById = async (agentId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.agents.getAgentById, {
+    api_key: process.env.CONVEX_API_KEY,
+    agentId,
+  });
+};
+
+const setPrimaryDecision = async (
+  decisionId,
+  primaryDecision,
+  primaryReason
+) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.Decisions.setPrimaryDecision, {
+    api_key: process.env.CONVEX_API_KEY,
+    decisionId,
+    primaryDecision,
+    primaryReason,
+  });
+};
+
 export {
   addUser,
   getUserByAddress,
@@ -174,4 +205,7 @@ export {
   unfollowAgent,
   getFollowers,
   getFollowedAgents,
+  getDecisionById,
+  getAgentById,
+  setPrimaryDecision,
 };

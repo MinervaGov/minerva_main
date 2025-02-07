@@ -8,6 +8,7 @@ import daoRoutes from "./routes/daoRoute.js";
 import followRoutes from "./routes/followRoute.js";
 import redis from "./utils/redis.js";
 import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
+import decisionQueue from "./utils/Queue.js";
 
 // Load environment variables
 dotenv.config();
@@ -40,6 +41,12 @@ redis.on("connect", async () => {
 
 redis.on("error", (err) => {
   console.error("Redis connection error:", err);
+});
+
+app.get("/api/add-queue/:decisionId", async (req, res) => {
+  const { decisionId } = req.params;
+  await decisionQueue.add({ decisionId });
+  res.status(200).json({ message: "Decision added to queue" });
 });
 
 // Start server

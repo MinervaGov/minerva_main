@@ -23,6 +23,7 @@
     "@coinbase/coinbase-sdk": "^0.17.0",
     "@ethersproject/hdnode": "^5.7.0",
     "@grammyjs/conversations": "^1.2.0",
+    "@langchain/core": "^0.3.39",
     "@langchain/langgraph": "^0.2.44",
     "@langchain/openai": "^0.4.2",
     "@ngrok/ngrok": "^1.4.1",

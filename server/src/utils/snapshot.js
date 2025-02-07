@@ -127,7 +127,7 @@ const listenForProposals = async () => {
         console.log(error);
       }
     });
-  }, 10000);
+  }, 60000);
 };
 
 export { fetchDaoData, loadDaoProposals, listenForProposals };

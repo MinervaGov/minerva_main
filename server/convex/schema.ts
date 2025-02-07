@@ -59,7 +59,8 @@ export default defineSchema({
     agentId: v.id("agents"),
   })
     .index("by_user", ["userId"])
-    .index("by_agent", ["agentId"]),
+    .index("by_agent", ["agentId"])
+    .index("by_user_agent", ["userId", "agentId"]),
   userAgentJoins: defineTable({
     userId: v.id("users"),
     agentId: v.id("agents"),

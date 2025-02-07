@@ -1,19 +1,26 @@
 "use client";
 
 import WalletCard from "@/components/ui/WalletCard";
-import { Check, Loader2, UserPlus, Users, Vote } from "lucide-react";
+import { Check, Loader2, UserPlus, Users, Vote, X } from "lucide-react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import daos from "@/utils/daoConfig";
 import DelegateButton from "./DelegateButton";
+import useSelectAgent from "@/hooks/useSelectAgent";
 
 export default function TopBar() {
   const agent = useSelector((state) => state.agent.agent);
   const isLoading = useSelector((state) => state.agent.isLoading);
   const dao = agent ? daos.find((dao) => dao.id === agent.daoId) : null;
   const votingPower = useSelector((state) => state.agent.votingPower);
+  const followers = useSelector((state) => state.agent.followers);
+  const { followAgent, unfollowAgent } = useSelectAgent();
 
-  const isFollowing = false;
+  const followedAgents = useSelector((state) => state.user.followedAgents);
+  const isFollowing =
+    followedAgents &&
+    followedAgents.some((followedAgent) => followedAgent._id === agent._id);
+
   return (
     <div className="w-full border-b gap-7 border-gray-700 flex flex-col px-6 py-8 pb-7">
       <div className="flex justify-between items-start">
@@ -77,7 +84,7 @@ export default function TopBar() {
 
           <div className="flex gap-2 items-center">
             <Users className="w-5 h-5" />
-            <p className="font-bold">3</p>
+            <p className="font-bold">{followers ? followers : 0}</p>
             <p className="">Followers</p>
           </div>
 
@@ -106,15 +113,27 @@ export default function TopBar() {
           </div>
 
           {!isFollowing && (
-            <div className="flex gap-2 items-center border border-gray-700 rounded-lg cursor-pointer px-3 py-1 hover:border-gray-600">
+            <div
+              className="flex gap-2 items-center border border-gray-700 rounded-lg cursor-pointer px-3 py-1 hover:border-gray-600"
+              onClick={() => {
+                followAgent();
+              }}
+            >
               <p>Follow</p>
             </div>
           )}
 
           {isFollowing && (
-            <div className="flex gap-2 items-center opacity-70 border border-gray-700 rounded-lg cursor-pointer px-3 py-1 hover:border-gray-600">
-              <Check className="w-5 h-5" />
-              <p>Following</p>
+            <div
+              className="flex gap-2 items-center opacity-70 border group w-28 hover:border-red-600 border-gray-700 rounded-lg cursor-pointer px-3 py-1"
+              onClick={() => {
+                unfollowAgent();
+              }}
+            >
+              <Check className="w-5 h-5 group-hover:hidden" />
+              <X className="w-4 h-4 group-hover:block hidden text-red-400" />
+              <p className="group-hover:hidden">Following</p>
+              <p className="hidden group-hover:block text-red-400">Unfollow</p>
             </div>
           )}
 

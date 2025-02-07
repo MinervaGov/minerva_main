@@ -28,12 +28,24 @@ export default function DelegateButton() {
   const { delegate } = useSelectAgent();
   const isDelegating = useSelector((state) => state.agent.isDelegating);
   const delegates = useSelector((state) => state.agent.delegates);
+  const { isConnected } = useAccount();
+  const user = useSelector((state) => state.user.user);
 
   return (
     <>
       <div
         className="flex gap-2 items-center text-blue-300 cursor-pointer hover:text-blue-400"
         onClick={() => {
+          if (!isConnected) {
+            toast.error("Please connect your wallet");
+            return;
+          }
+
+          if (!user) {
+            toast.error("Please register to delegate");
+            return;
+          }
+
           if (delegates !== agent?.walletAddress) {
             onOpen();
           }

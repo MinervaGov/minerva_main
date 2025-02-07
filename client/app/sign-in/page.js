@@ -1,5 +1,6 @@
 import SignIn from "@/components/layout/onBoard/signin/SignIn";
 import PageContainer from "@/components/layout/onBoard/PageContainer";
+import Image from "next/image";
 
 const SignInPage = () => {
   return (
@@ -7,6 +8,16 @@ const SignInPage = () => {
       heading="Setup Profile"
       subHeading="Connect your wallet to access your account and manage your agent."
       paragraph="Access your account"
+      right={
+        <Image
+          src="/minerva/avatar.jpeg"
+          width={500}
+          height={500}
+          className=" object-cover w-full h-full"
+          alt="signin-image"
+        />
+      }
+      rightColor="#f3f3f3"
     >
       <SignIn />
     </PageContainer>

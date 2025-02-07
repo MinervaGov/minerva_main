@@ -118,6 +118,45 @@ const getProposalById = async (proposalId) => {
     proposalId,
   });
 };
+
+const followAgent = async (userId, agentId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.userAgentFollow.followAgent, {
+    api_key: process.env.CONVEX_API_KEY,
+    userId,
+    agentId,
+  });
+};
+
+const unfollowAgent = async (userId, agentId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.userAgentFollow.unfollowAgent, {
+    api_key: process.env.CONVEX_API_KEY,
+    userId,
+    agentId,
+  });
+};
+
+const getFollowers = async (agentId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.userAgentFollow.getFollowerCount, {
+    api_key: process.env.CONVEX_API_KEY,
+    agentId,
+  });
+};
+
+const getFollowedAgents = async (userId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.userAgentFollow.getFollowedAgents, {
+    api_key: process.env.CONVEX_API_KEY,
+    userId,
+  });
+};
+
 export {
   addUser,
   getUserByAddress,
@@ -131,4 +170,8 @@ export {
   changeDecisionStatus,
   getDecisionsByAgentId,
   getProposalById,
+  followAgent,
+  unfollowAgent,
+  getFollowers,
+  getFollowedAgents,
 };

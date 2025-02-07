@@ -8,6 +8,7 @@ const initialState = {
   votingPower: null,
   delegates: null,
   isDelegating: false,
+  followers: null,
 };
 
 const agentSlice = createSlice({
@@ -44,11 +45,19 @@ const agentSlice = createSlice({
       state.isDelegating = action.payload;
     },
 
+    setFollowers: (state, action) => {
+      state.followers = action.payload;
+    },
+
     clearAll: (state) => {
       state.agent = null;
       state.decisions = [];
       state.selectedDecision = null;
       state.isLoading = false;
+      state.votingPower = null;
+      state.delegates = null;
+      state.isDelegating = false;
+      state.followers = null;
     },
   },
 });
@@ -62,6 +71,7 @@ export const {
   setVotingPower,
   setDelegates,
   setIsDelegating,
+  setFollowers,
 } = agentSlice.actions;
 
 export default agentSlice.reducer;

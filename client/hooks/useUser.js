@@ -2,17 +2,25 @@
 import axios from "axios";
 import { useAccount } from "wagmi";
 import { useDispatch } from "react-redux";
-import { setIsLoading, setUser } from "@/redux/slice/userSlice";
+import {
+  setFollowedAgents,
+  setIsLoading,
+  setUser,
+} from "@/redux/slice/userSlice";
 import { toast } from "sonner";
 import { useEthersSigner } from "@/lib/ethersSigner";
+import { useSelector } from "react-redux";
 
 export default function useUser() {
   const dispatch = useDispatch();
   const { address, chainId } = useAccount();
   const signer = useEthersSigner();
+  const user = useSelector((state) => state.user.user);
 
   const fetchUserProfile = async () => {
     dispatch(setIsLoading(true));
+    dispatch(setUser(null));
+    dispatch(setFollowedAgents([]));
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/users/${address}`
@@ -77,5 +85,22 @@ export default function useUser() {
     }
   };
 
-  return { fetchUserProfile, initializeUser };
+  const getFollowedAgents = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/follow/followed/${user._id}`
+      );
+
+      if (response.data.success) {
+        dispatch(setFollowedAgents(response.data.followedAgents));
+      } else {
+        dispatch(setFollowedAgents([]));
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setFollowedAgents([]));
+    }
+  };
+
+  return { fetchUserProfile, initializeUser, getFollowedAgents };
 }

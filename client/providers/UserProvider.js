@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useAccount } from "wagmi";
 
 export default function UserProvider({ children }) {
-  const { fetchUserProfile } = useUser();
+  const { fetchUserProfile, getFollowedAgents } = useUser();
   const pathname = usePathname();
   const { isConnected } = useAccount();
   const { user } = useSelector((state) => state.user);
@@ -21,6 +21,11 @@ export default function UserProvider({ children }) {
 
     fetchUserProfile();
   }, [isConnected, pathname]);
+
+  useEffect(() => {
+    if (!user) return;
+    getFollowedAgents();
+  }, [user]);
 
   return <>{children}</>;
 }

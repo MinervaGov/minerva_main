@@ -5,7 +5,7 @@ import FormHeading from "./FormHeading";
 
 const FormContainer = ({ heading, subHeading, paragraph, children }) => {
   return (
-    <section className="flex-[2] h-full text-center p-10">
+    <section className="w-[600px] h-full text-center p-10">
       <Image
         src="/minerva.svg"
         width={30}

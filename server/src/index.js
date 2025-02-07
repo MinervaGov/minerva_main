@@ -5,6 +5,7 @@ import userRoutes from "./routes/userRoute.js";
 import agentRoutes from "./routes/agentRoute.js";
 import proposalRoutes from "./routes/proposalRoute.js";
 import daoRoutes from "./routes/daoRoute.js";
+import followRoutes from "./routes/followRoute.js";
 import redis from "./utils/redis.js";
 import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
 
@@ -23,6 +24,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/agents", agentRoutes);
 app.use("/api/proposals", proposalRoutes);
 app.use("/api/dao", daoRoutes);
+app.use("/api/follow", followRoutes);
 
 app.get("/", (req, res) => {
   res.send("Minerva Backend is running 🚀");

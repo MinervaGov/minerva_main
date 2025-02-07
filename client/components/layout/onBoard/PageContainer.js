@@ -2,7 +2,14 @@ import React from "react";
 
 import FormContainer from "./FormContainer";
 
-const PageContainer = ({ children, right, heading, subHeading, paragraph }) => {
+const PageContainer = ({
+  children,
+  right,
+  heading,
+  subHeading,
+  paragraph,
+  rightColor = "black",
+}) => {
   return (
     <main className="flex items-center justify-center h-screen">
       <FormContainer
@@ -13,7 +20,14 @@ const PageContainer = ({ children, right, heading, subHeading, paragraph }) => {
         {children}
       </FormContainer>
 
-      <section className="flex-[3] h-full">{right}</section>
+      <section
+        className="flex-1 h-full relative overflow-hidden flex rounded-l-2xl items-center justify-center"
+        style={{
+          backgroundColor: rightColor,
+        }}
+      >
+        {right}
+      </section>
     </main>
   );
 };

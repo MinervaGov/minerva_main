@@ -16,6 +16,7 @@ import type {
 import type * as Decisions from "../Decisions.js";
 import type * as Proposals from "../Proposals.js";
 import type * as agents from "../agents.js";
+import type * as userAgentFollow from "../userAgentFollow.js";
 import type * as users from "../users.js";
 
 /**
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   Decisions: typeof Decisions;
   Proposals: typeof Proposals;
   agents: typeof agents;
+  userAgentFollow: typeof userAgentFollow;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

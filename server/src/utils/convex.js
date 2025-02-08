@@ -173,6 +173,16 @@ const getAgentById = async (agentId) => {
   });
 };
 
+const addSubscriptionTg = async (agentName, userTg) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.Subscriptions.AddSubscriptionTg, {
+    api_key: process.env.CONVEX_API_KEY,
+    agentName,
+    userTg
+  });
+};
+
 const setPrimaryDecision = async (
   decisionId,
   primaryDecision,
@@ -207,5 +217,6 @@ export {
   getFollowedAgents,
   getDecisionById,
   getAgentById,
+  addSubscriptionTg,
   setPrimaryDecision,
 };

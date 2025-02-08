@@ -9,6 +9,7 @@ import followRoutes from "./routes/followRoute.js";
 import redis from "./utils/redis.js";
 import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
 import decisionQueue from "./utils/Queue.js";
+import bot from "./utils/tg.js"
 
 // Load environment variables
 dotenv.config();
@@ -54,3 +55,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Start telegram bot
+bot.start();

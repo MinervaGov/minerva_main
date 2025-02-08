@@ -93,4 +93,10 @@ export default defineSchema({
     .index("by_proposal", ["proposalId"])
     .index("by_agent", ["agentId"])
     .index("by_status", ["status"]),
+  Subscriptions: defineTable({
+    agentId: v.id("agents"),
+    usersTg: v.array(v.string()),
+    usersDisc: v.array(v.string()),
+  })
+    .index("by_agent", ["agentId"]),
 });

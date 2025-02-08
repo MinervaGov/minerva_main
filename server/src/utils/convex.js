@@ -183,6 +183,15 @@ const addSubscriptionTg = async (agentName, userTg) => {
   });
 };
 
+const getUsersToNotify = async (daoId) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.Subscriptions.getUsersToNotify, {
+    api_key: process.env.CONVEX_API_KEY,
+    daoId
+  });
+}
+
 const setPrimaryDecision = async (
   decisionId,
   primaryDecision,
@@ -237,6 +246,7 @@ export {
   getDecisionById,
   getAgentById,
   addSubscriptionTg,
+  getUsersToNotify,
   setPrimaryDecision,
   setExecuted,
   getDecisionsByStatus,

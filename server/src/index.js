@@ -8,7 +8,7 @@ import daoRoutes from "./routes/daoRoute.js";
 import followRoutes from "./routes/followRoute.js";
 import redis from "./utils/redis.js";
 import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
-import bot from "./utils/tg.js";
+import { bot } from "./utils/tg.js";
 import { decisionQueue, scheduleQueue } from "./utils/Queue.js";
 
 // Load environment variables
@@ -63,4 +63,4 @@ app.listen(PORT, () => {
 });
 
 // Start telegram bot
-// bot.start();
+bot.start();

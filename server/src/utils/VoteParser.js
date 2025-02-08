@@ -6,8 +6,9 @@ import { HumanMessage } from "@langchain/core/messages";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { CdpAgentkit } from "@coinbase/cdp-agentkit-core";
 import { CdpTool, CdpToolkit } from "@coinbase/cdp-langchain";
-import { changeDecisionStatus, setPrimaryDecision } from "./convex.js";
+import { changeDecisionStatus, setPrimaryDecision, getUsersToNotify } from "./convex.js";
 import { scheduleDecisions } from "./scheduler.js";
+import { notifyDecisionTG } from "./tg.js";
 
 dotenv.config();
 
@@ -201,6 +202,9 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
       parsedResponse.vote,
       parsedResponse.reason
     );
+
+    const usersToNotify = await getUsersToNotify(proposal.daoId)
+    await notifyDecisionTG(usersToNotify, proposal.title, proposal.choices, parsedResponse)
 
     console.log("Decision Processed");
 

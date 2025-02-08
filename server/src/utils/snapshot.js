@@ -7,9 +7,11 @@ import {
   addProposal,
   getAgentsByDaoId,
   getDecisionsByStatus,
+  getUsersToNotify
 } from "./convex.js";
 import { summarizeProposal } from "./openai.js";
 import { decisionQueue } from "./Queue.js";
+import { notifyNewProposalTG } from "./tg.js";
 
 dotenv.config();
 
@@ -117,6 +119,9 @@ const listenForProposals = async () => {
             endDate: parseInt(currentProposal.end),
             aiSummary: aiSummary,
           });
+
+          const usersToNotify = await getUsersToNotify(dao.id)
+          await notifyNewProposalTG(usersToNotify, dao.snapshotSpace, currentProposal.id, aiSummary)
 
           const agents = await getAgentsByDaoId(dao.id);
 

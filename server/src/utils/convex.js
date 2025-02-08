@@ -188,9 +188,9 @@ const getUsersToNotify = async (daoId) => {
 
   return await client.query(api.Subscriptions.getUsersToNotify, {
     api_key: process.env.CONVEX_API_KEY,
-    daoId
+    daoId,
   });
-}
+};
 
 const setPrimaryDecision = async (
   decisionId,
@@ -226,6 +226,15 @@ const getDecisionsByStatus = async (status) => {
   });
 };
 
+const getDecisionsByExecutionStatus = async (executionStatus) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.Decisions.getDecisionsByExecutionStatus, {
+    api_key: process.env.CONVEX_API_KEY,
+    executionStatus,
+  });
+};
+
 export {
   addUser,
   getUserByAddress,
@@ -250,4 +259,5 @@ export {
   setPrimaryDecision,
   setExecuted,
   getDecisionsByStatus,
+  getDecisionsByExecutionStatus,
 };

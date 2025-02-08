@@ -168,3 +168,30 @@ export const getDecisionsByStatus = query({
     return decisions;
   },
 });
+
+export const getDecisionsByExecutionStatus = query({
+  args: {
+    api_key: v.string(),
+    executionStatus: v.union(
+      v.literal("pending"),
+      v.literal("queued"),
+      v.literal("failed"),
+      v.literal("success"),
+      v.literal("missed")
+    ),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, executionStatus } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const decisions = await ctx.db
+      .query("Decisions")
+      .withIndex("by_executed", (q) => q.eq("executed", executionStatus))
+      .collect();
+
+    return decisions;
+  },
+});

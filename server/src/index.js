@@ -7,7 +7,12 @@ import proposalRoutes from "./routes/proposalRoute.js";
 import daoRoutes from "./routes/daoRoute.js";
 import followRoutes from "./routes/followRoute.js";
 import redis from "./utils/redis.js";
-import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
+import {
+  listenForProposals,
+  loadDaoProposals,
+  loadPendingDecisions,
+  loadQueuedDecisions,
+} from "./utils/snapshot.js";
 import { bot } from "./utils/tg.js";
 import { decisionQueue, scheduleQueue } from "./utils/Queue.js";
 import { getUsersToNotify } from "./utils/convex.js";
@@ -39,6 +44,8 @@ redis.on("connect", async () => {
 
   await loadDaoProposals();
   listenForProposals();
+  loadQueuedDecisions();
+  loadPendingDecisions();
 });
 
 redis.on("error", (err) => {

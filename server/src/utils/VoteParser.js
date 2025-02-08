@@ -24,6 +24,8 @@ You are a helpful assistant that can help with the following tasks:
 - Returns only the first json object in the response
 - Returns the output in a json format, and nothing else
 - Removes names from the Character profile from the reason, and provides pure reason.
+- Remove any names from the reason, and provide pure reason
+- Convert the Vote into an integer if not provided as an integer
 `;
 
 const GaiaMessageInput = z
@@ -203,7 +205,7 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
 
     await setPrimaryDecision(
       decisionId,
-      parsedResponse.vote,
+      parsedResponse.vote.toString(),
       parsedResponse.reason
     );
 

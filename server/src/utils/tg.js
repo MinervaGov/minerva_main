@@ -47,10 +47,10 @@ async function notifyNewProposalTG(
   const proposalLink = `https://snapshot.box/#/s:${snapshotSpaceId}/proposal/${proposalId}`;
 
   let counter = 0;
-  for (let agent in users) {
+  for (let agent of users) {
     const agentDetails = await getAgentById(agent.agentId);
     const agentName = agentDetails.name;
-    for (let user in agent.usersTg) {
+    for (let user of agent.usersTg) {
       counter++;
       if (counter == 30) {
         await delay(1000);
@@ -73,10 +73,10 @@ async function notifyDecisionTG(users, title, choices, aiResponse) {
   }
 
   let counter = 0;
-  for (let agent in users) {
+  for (let agent of users) {
     const agentDetails = await getAgentById(agent.agentId);
     const agentName = agentDetails.name;
-    for (let user in agent.usersTg) {
+    for (let user of agent.usersTg) {
       counter++;
       if (counter == 30) {
         await delay(1000);

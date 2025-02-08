@@ -5,12 +5,15 @@ import redis from "./redis.js";
 import {
   addBulkDecision,
   addProposal,
+  getAgentById,
   getAgentsByDaoId,
+  getDecisionsByExecutionStatus,
   getDecisionsByStatus,
-  getUsersToNotify
+  getProposalById,
+  getUsersToNotify,
 } from "./convex.js";
 import { summarizeProposal } from "./openai.js";
-import { decisionQueue } from "./Queue.js";
+import { decisionQueue, scheduleQueue } from "./Queue.js";
 import { notifyNewProposalTG } from "./tg.js";
 
 dotenv.config();
@@ -120,8 +123,13 @@ const listenForProposals = async () => {
             aiSummary: aiSummary,
           });
 
-          const usersToNotify = await getUsersToNotify(dao.id)
-          await notifyNewProposalTG(usersToNotify, dao.snapshotSpace, currentProposal.id, aiSummary)
+          const usersToNotify = await getUsersToNotify(dao.id);
+          await notifyNewProposalTG(
+            usersToNotify,
+            dao.snapshotSpace,
+            currentProposal.id,
+            aiSummary
+          );
 
           const agents = await getAgentsByDaoId(dao.id);
 
@@ -150,9 +158,28 @@ const loadPendingDecisions = async () => {
   console.log(`Loaded ${decisions.length} pending decisions`);
 };
 
+const loadQueuedDecisions = async () => {
+  const decisions = await getDecisionsByExecutionStatus("queued");
+
+  await Promise.all(
+    decisions.map(async (decision) => {
+      const agent = await getAgentById(decision.agentId);
+      const proposal = await getProposalById(decision.proposalId);
+
+      const delay =
+        proposal.endDate * 1000 - agent.delayPeriod - new Date().getTime();
+
+      scheduleQueue.add({ decisionId: decision._id }, { delay });
+    })
+  );
+
+  console.log(`Loaded ${decisions.length} queued decisions`);
+};
+
 export {
   fetchDaoData,
   loadDaoProposals,
   listenForProposals,
   loadPendingDecisions,
+  loadQueuedDecisions,
 };

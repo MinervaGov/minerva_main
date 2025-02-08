@@ -8,8 +8,8 @@ import daoRoutes from "./routes/daoRoute.js";
 import followRoutes from "./routes/followRoute.js";
 import redis from "./utils/redis.js";
 import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
-import decisionQueue from "./utils/Queue.js";
-import bot from "./utils/tg.js"
+import bot from "./utils/tg.js";
+import { decisionQueue, scheduleQueue } from "./utils/Queue.js";
 
 // Load environment variables
 dotenv.config();
@@ -50,6 +50,12 @@ app.get("/api/add-queue/:decisionId", async (req, res) => {
   res.status(200).json({ message: "Decision added to queue" });
 });
 
+app.get("/api/add-schedule/:decisionId", async (req, res) => {
+  const { decisionId } = req.params;
+  await scheduleQueue.add({ decisionId });
+  res.status(200).json({ message: "Decision added to schedule" });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
@@ -57,4 +63,4 @@ app.listen(PORT, () => {
 });
 
 // Start telegram bot
-bot.start();
+// bot.start();

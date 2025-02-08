@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import redis from "./redis.js";
 import { addBulkDecision, addProposal, getAgentsByDaoId } from "./convex.js";
 import { summarizeProposal } from "./openai.js";
-import decisionQueue from "./Queue.js";
+import { decisionQueue } from "./Queue.js";
 
 dotenv.config();
 

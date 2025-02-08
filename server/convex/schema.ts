@@ -89,14 +89,21 @@ export default defineSchema({
       v.literal("decided"),
       v.literal("failed")
     ),
+    executed: v.union(
+      v.literal("pending"),
+      v.literal("queued"),
+      v.literal("failed"),
+      v.literal("success"),
+      v.literal("missed")
+    ),
   })
     .index("by_proposal", ["proposalId"])
     .index("by_agent", ["agentId"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_executed", ["executed"]),
   Subscriptions: defineTable({
     agentId: v.id("agents"),
     usersTg: v.array(v.string()),
     usersDisc: v.array(v.string()),
-  })
-    .index("by_agent", ["agentId"]),
+  }).index("by_agent", ["agentId"]),
 });

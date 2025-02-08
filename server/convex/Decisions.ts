@@ -25,6 +25,7 @@ export const createBulkDecision = mutation({
           proposalId,
           agentId,
           status,
+          executed: "pending",
         });
       })
     );
@@ -113,6 +114,7 @@ export const setPrimaryDecision = mutation({
       primaryDecision,
       primaryReason,
       status: "decided",
+      executed: "queued",
     });
   },
 });

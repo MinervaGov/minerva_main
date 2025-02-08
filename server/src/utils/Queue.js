@@ -5,14 +5,30 @@ import {
   getDecisionById,
   getProposalById,
 } from "./convex.js";
-import { getDecisions } from "../controllers/agentController.js";
-import { getFinalDecision } from "./cdp.js";
+import { getFinalDecision } from "./VoteParser.js";
+import { processScheduledDecisions } from "./scheduler.js";
 
 const decisionQueue = new Queue("decisions", {
   redis: {
     host: process.env.REDIS_HOST || "localhost",
     port: process.env.REDIS_PORT || 6379,
   },
+});
+
+const scheduleQueue = new Queue("schedule", {
+  redis: {
+    host: process.env.REDIS_HOST || "localhost",
+    port: process.env.REDIS_PORT || 6379,
+  },
+});
+
+scheduleQueue.process(async (job) => {
+  try {
+    const { decisionId } = job.data;
+    await processScheduledDecisions(decisionId);
+  } catch (error) {
+    console.error("Error processing decision:", error);
+  }
 });
 
 decisionQueue.process(async (job) => {
@@ -41,4 +57,4 @@ const processDecisions = async (decisionId) => {
   }
 };
 
-export default decisionQueue;
+export { decisionQueue, scheduleQueue };

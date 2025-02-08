@@ -1,14 +1,16 @@
 "use client";
 
-import { Book, Info, RefreshCcw, X } from "lucide-react";
+import { Book, Info } from "lucide-react";
 import { useSelector } from "react-redux";
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import MinervaText from "../onBoard/signin/MinervaText";
-import { Button } from "@heroui/react";
+import ReEvaluateButton from "./ReEvaluateButton";
+import DisputeButton from "./DisputeButton";
 
 export default function DetailBar() {
   const selectedDecision = useSelector((state) => state.agent.selectedDecision);
   const agent = useSelector((state) => state.agent.agent);
+
   return (
     <div className="rounded-md border border-zinc-600 overflow-hidden flex flex-col w-full h-full">
       <div className="px-4 py-4 border-b border-zinc-600 bg-zinc-800">
@@ -67,14 +69,24 @@ export default function DetailBar() {
                   </div>
                   {selectedDecision.status === "decided" && (
                     <div className="flex flex-col gap-5 mt-2">
-                      <div className="text-xs flex -mb-2 items-center gap-2 font-semibold text-zinc-400">
+                      <div className="text-xs flex flex-wrap -mb-2 items-center gap-2 font-semibold text-zinc-400">
                         <p>Miverva suggested to vote for </p>
-                        <div className="text-sm text-white border border-zinc-600 rounded-full px-2 py-1">
-                          {
-                            selectedDecision.proposal.choices[
-                              Number(selectedDecision.primaryDecision) - 1
-                            ]
-                          }
+                        <div
+                          className="text-sm text-white border border-zinc-600 rounded-full px-2 py-1"
+                          style={{
+                            borderColor: selectedDecision?.FinalDecision
+                              ? "red"
+                              : "",
+                            color: selectedDecision?.FinalDecision ? "red" : "",
+                          }}
+                        >
+                          {selectedDecision?.FinalDecision
+                            ? selectedDecision.proposal.choices[
+                                Number(selectedDecision.FinalDecision) - 1
+                              ]
+                            : selectedDecision.proposal.choices[
+                                Number(selectedDecision.primaryDecision) - 1
+                              ]}
                         </div>
                         <p>
                           Minerva{" "}
@@ -100,7 +112,10 @@ export default function DetailBar() {
                           }
                         </div>
                       </div>
-                      <MinervaText text={selectedDecision.primaryReason} />
+                      <MinervaText
+                        text={selectedDecision.primaryReason}
+                        animate={false}
+                      />
 
                       <div className="flex gap-2 items-center mt-1">
                         <Info className="w-5 h-5 text-zinc-400" />
@@ -111,26 +126,48 @@ export default function DetailBar() {
                         </div>
                       </div>
 
+                      {selectedDecision?.FinalDecision && (
+                        <div className="flex gap-2 items-center mt-1">
+                          <Info className="w-5 h-5 text-red-400" />
+                          <div className="text-xs text-red-400 border border-red-600 rounded-full px-2 py-1">
+                            The Decision was disputed.
+                          </div>
+                        </div>
+                      )}
+
                       {!(
                         new Date().getTime() >
                         selectedDecision.proposal.endDate * 1000 -
                           agent.delayPeriod
-                      ) && (
-                        <div className="flex gap-2 items-center mt-1">
-                          <Button size="sm" className="w-fit">
-                            <RefreshCcw className="w-4 h-4" /> Re-evaluate
-                          </Button>
-                          <Button size="sm" className="w-fit bg-red-500">
-                            <X className="w-4 h-4" /> Dispute
-                          </Button>
+                      ) &&
+                        !selectedDecision?.FinalDecision && (
+                          <div className="flex gap-2 items-center mt-1">
+                            <ReEvaluateButton />
+
+                            <DisputeButton />
+                          </div>
+                        )}
+                    </div>
+                  )}
+                  {selectedDecision.status === "failed" && (
+                    <div className="flex flex-col mt-2">
+                      <div className="flex gap-2 mb-4 items-center">
+                        <Info className="w-5 h-5 text-zinc-400" />
+                        <div className="text-xs text-zinc-400 border border-zinc-600 rounded-full px-2 py-1">
+                          The Decision failed to evaluate. Please re-evaluate
+                          the Decision.
                         </div>
-                      )}
+                      </div>
+                      <ReEvaluateButton />
                     </div>
                   )}
                 </div>
 
                 <div className="mb-5">
-                  <MinervaText text={selectedDecision.proposal.aiSummary} />
+                  <MinervaText
+                    text={selectedDecision.proposal.aiSummary}
+                    animate={false}
+                  />
                 </div>
 
                 <div className="space-y-5">

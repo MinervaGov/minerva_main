@@ -15,7 +15,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata = {
   title: "Minerva",
-  description: "DAO Agent",
+  description: "Agentic DAO Voting System",
 };
 
 export default function RootLayout({ children }) {

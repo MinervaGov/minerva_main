@@ -9,6 +9,8 @@ import {
   setDelegates,
   setFollowers,
   setIsDelegating,
+  setIsDisputing,
+  setIsEvaluating,
   setIsLoading,
   setSelectedDecision,
   setVotingPower,
@@ -27,6 +29,7 @@ export default function useSelectAgent() {
   const { address, isConnected, chainId } = useAccount();
   const agent = useSelector((state) => state.agent.agent);
   const user = useSelector((state) => state.user.user);
+  const selectedDecision = useSelector((state) => state.agent.selectedDecision);
   const { getFollowedAgents } = useUser();
 
   const loadAgent = async () => {
@@ -295,6 +298,132 @@ export default function useSelectAgent() {
     }
   };
 
+  const reEvaluateDecision = async (decisionId, onClose) => {
+    try {
+      dispatch(setIsEvaluating(true));
+
+      if (agent.createdBy !== user._id) {
+        toast.error("You are not the creator of this agent");
+        return;
+      }
+
+      if (!isConnected) {
+        toast.error("Please connect your wallet");
+        return;
+      }
+
+      if (!user) {
+        toast.error("Please register to unfollow an agent");
+        return;
+      }
+
+      const domain = {
+        name: "minervagov.eth",
+        version: "1",
+        chainId: chainId,
+        verifyingContract: process.env.NEXT_PUBLIC_MINERVA_GOV_ADDRESS,
+      };
+
+      const types = {
+        ReEvaluate: [{ name: "decisionId", type: "string" }],
+      };
+
+      const message = {
+        decisionId,
+      };
+
+      const signature = await signer._signTypedData(domain, types, message);
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/utils/re-evaluate`,
+        { decisionId, walletAddress: address, signature, chainId }
+      );
+
+      if (response.data.success) {
+        toast.success("Decision re-evaluated successfully");
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        window.location.reload();
+
+        onClose();
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error re-evaluating the Decision");
+      console.log(error);
+    } finally {
+      dispatch(setIsEvaluating(false));
+    }
+  };
+
+  const disputeDecision = async (decisionId, finalDecision, onClose) => {
+    try {
+      dispatch(setIsDisputing(true));
+
+      if (agent.createdBy !== user._id) {
+        toast.error("You are not the creator of this agent");
+        return;
+      }
+
+      if (!isConnected) {
+        toast.error("Please connect your wallet");
+        return;
+      }
+
+      if (!user) {
+        toast.error("Please register to unfollow an agent");
+        return;
+      }
+
+      const domain = {
+        name: "minervagov.eth",
+        version: "1",
+        chainId: chainId,
+        verifyingContract: process.env.NEXT_PUBLIC_MINERVA_GOV_ADDRESS,
+      };
+
+      const types = {
+        Dispute: [
+          { name: "decisionId", type: "string" },
+          { name: "finalDecision", type: "string" },
+        ],
+      };
+
+      const message = {
+        decisionId,
+        finalDecision,
+      };
+
+      const signature = await signer._signTypedData(domain, types, message);
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/utils/dispute`,
+        {
+          decisionId,
+          finalDecision,
+          walletAddress: address,
+          signature,
+          chainId,
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Decision disputed successfully");
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        window.location.reload();
+      }
+
+      onClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setIsDisputing(false));
+    }
+  };
   return {
     loadAgent,
     loadDelegates,
@@ -302,5 +431,7 @@ export default function useSelectAgent() {
     loadFollowers,
     followAgent,
     unfollowAgent,
+    reEvaluateDecision,
+    disputeDecision,
   };
 }

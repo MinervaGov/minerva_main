@@ -79,17 +79,34 @@ async function castVote(wallet, args) {
       ],
     };
 
-    // Message data
-    const message = {
-      from: agent.walletAddress,
-      space: dao.snapshotSpace,
-      timestamp: Number((new Date().getTime() / 1000).toFixed(0)),
-      proposal: proposal.snapshotId,
-      choice: Number(decision.primaryDecision),
-      reason: decision.primaryReason,
-      app: "minervagov",
-      metadata: "{}",
-    };
+    const finalDecision = decision.FinalDecision;
+
+    let message = {};
+
+    if (finalDecision) {
+      message = {
+        from: agent.walletAddress,
+        space: dao.snapshotSpace,
+        timestamp: Number((new Date().getTime() / 1000).toFixed(0)),
+        proposal: proposal.snapshotId,
+        choice: Number(finalDecision),
+        reason: "Minerva's Decision (Disputed)",
+        app: "minervagov",
+        metadata: "{}",
+      };
+    } else {
+      // Message data
+      message = {
+        from: agent.walletAddress,
+        space: dao.snapshotSpace,
+        timestamp: Number((new Date().getTime() / 1000).toFixed(0)),
+        proposal: proposal.snapshotId,
+        choice: Number(decision.primaryDecision),
+        reason: decision.primaryReason,
+        app: "minervagov",
+        metadata: "{}",
+      };
+    }
 
     const privy = new PrivyClient(
       process.env.PRIVY_APP_ID,
@@ -217,6 +234,17 @@ const processScheduledDecisions = async (decisionId) => {
 };
 
 const scheduleDecisions = async (decisionId) => {
+  const pendingDecisions = await scheduleQueue.getJobs(["waiting"]);
+
+  const isDecisionScheduled = pendingDecisions.some(
+    (job) => job.data.decisionId === decisionId
+  );
+
+  if (isDecisionScheduled) {
+    console.log(`Decision ${decisionId} is already scheduled`);
+    return;
+  }
+
   const decision = await getDecisionById(decisionId);
 
   if (!decision) {
@@ -236,6 +264,11 @@ const scheduleDecisions = async (decisionId) => {
 
   const delay =
     proposal.endDate * 1000 - agent.delayPeriod - new Date().getTime();
+
+  if (delay < 0) {
+    console.log(`Decision ${decisionId} is already expired`);
+    return;
+  }
 
   await scheduleQueue.add({ decisionId }, { delay });
 

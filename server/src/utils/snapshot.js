@@ -75,6 +75,63 @@ const fetchDaoData = async (daoId) => {
   return proposals[0];
 };
 
+const fetchProposalById = async (daoId, proposalId) => {
+  const currentDao = daos.find((dao) => dao.id === daoId);
+
+  if (!currentDao) {
+    throw new Error("DAO not found");
+  }
+
+  const snapshotSpace = currentDao.snapshotSpace;
+
+  const query = `
+    query Proposals {
+      proposals(
+        first: 1,
+        skip: 0,
+        where: {
+          space_in: ["${snapshotSpace}"],
+          id: "${proposalId}"
+        },
+        orderBy: "created",
+        orderDirection: desc
+      ) {
+        id
+        title
+        body
+        choices
+        start
+        end
+        snapshot
+        state
+        author
+        space {
+          id
+          name
+        }
+      }
+    }
+  `;
+
+  const response = await axios.post(
+    process.env.SNAPSHOT_API_URL,
+    { query },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const proposals = response.data.data.proposals;
+
+  if (proposals.length === 0) {
+    return null;
+  }
+
+  return proposals[0];
+};
+
 const loadDaoProposals = async () => {
   try {
     await Promise.all(
@@ -183,10 +240,57 @@ const loadQueuedDecisions = async () => {
   console.log(`Loaded ${decisions.length} queued decisions`);
 };
 
+const addProposalToQueue = async (daoId, proposalId) => {
+  const dao = daos.find((dao) => dao.id === daoId);
+
+  if (!dao) {
+    throw new Error("DAO not found");
+  }
+
+  const proposal = await fetchProposalById(daoId, proposalId);
+  const aiSummary = await summarizeProposal(proposal.body);
+
+  const convexProposalId = await addProposal({
+    snapshotId: proposal.id,
+    daoId: dao.id,
+    title: proposal.title,
+    description: proposal.body,
+    choices: proposal.choices,
+    endDate: parseInt(proposal.end),
+    aiSummary: aiSummary,
+  });
+
+  const usersToNotify = await getUsersToNotify(dao.id);
+  await notifyNewProposalTG(
+    usersToNotify,
+    dao.snapshotSpace,
+    proposal.id,
+    aiSummary
+  );
+  await notifyProposalDiscord(
+    usersToNotify,
+    dao.snapshotSpace,
+    proposal.id,
+    aiSummary
+  );
+
+  const agents = await getAgentsByDaoId(dao.id);
+
+  const agentIds = agents.map((agent) => agent._id);
+
+  const decisionIds = await addBulkDecision(convexProposalId, agentIds);
+
+  decisionIds.forEach((decisionId) => {
+    decisionQueue.add({ decisionId });
+  });
+};
+
 export {
   fetchDaoData,
   loadDaoProposals,
   listenForProposals,
   loadPendingDecisions,
   loadQueuedDecisions,
+  fetchProposalById,
+  addProposalToQueue,
 };

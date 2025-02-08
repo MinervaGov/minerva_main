@@ -13,6 +13,7 @@ import {
 } from "./convex.js";
 import { scheduleDecisions } from "./scheduler.js";
 import { notifyDecisionTG } from "./tg.js";
+import { notifyDecisionDiscord } from "./discordBot.js";
 
 dotenv.config();
 
@@ -25,7 +26,9 @@ You are a helpful assistant that can help with the following tasks:
 - Returns the output in a json format, and nothing else
 - Removes names from the Character profile from the reason, and provides pure reason.
 - Remove any names from the reason, and provide pure reason
-- Convert the Vote into an integer if not provided as an integer
+- **Provide the output given by the tool as it is, and nothing else**
+- **Convert the Vote into an integer if not provided as an integer**
+- If you find any names in the reason, replace them with **Minerva**
 `;
 
 const GaiaMessageInput = z
@@ -67,6 +70,8 @@ async function getGaiaMessage(wallet, args) {
                 ### **Response Format:**  
                 Reply in the following **JSON format**:
                 ${responseFormat}
+
+                Give the output in only JSON format, and nothing else
                 `,
         },
       ],
@@ -91,7 +96,7 @@ async function getGaiaMessage(wallet, args) {
 async function initializeAgent() {
   try {
     const llm = new ChatOpenAI({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
     });
 
     // Configure CDP AgentKit
@@ -191,11 +196,13 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
 
     for await (const chunk of stream) {
       if ("agent" in chunk) {
-        response += chunk.agent.messages[0].content;
+        //response += chunk.agent.messages[0].content;
       } else if ("tools" in chunk) {
         response += chunk.tools.messages[0].content;
       }
     }
+
+    console.log("Response", response);
 
     const parsedResponse = parseVoteResponse(response);
 
@@ -216,13 +223,31 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
       proposal.choices,
       parsedResponse
     );
+    await notifyDecisionDiscord(
+      usersToNotify,
+      proposal.title,
+      proposal.choices,
+      parsedResponse
+    );
 
     console.log("Decision Processed");
 
     await scheduleDecisions(decisionId);
+
+    return {
+      success: true,
+      vote: parsedResponse.vote,
+      reason: parsedResponse.reason,
+      message: "Decision Processed Successfully",
+    };
   } catch (error) {
     console.log("Decision Failed to process", error);
     await changeDecisionStatus(decisionId, "failed");
+
+    return {
+      success: false,
+      message: "Decision Failed to process",
+    };
   }
 };
 

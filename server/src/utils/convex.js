@@ -245,6 +245,16 @@ const getDecisionsByExecutionStatus = async (executionStatus) => {
   });
 };
 
+const disputeDecision = async (decisionId, finalDecision) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.Decisions.disputeDecision, {
+    api_key: process.env.CONVEX_API_KEY,
+    decisionId,
+    finalDecision,
+  });
+};
+
 export {
   addUser,
   getUserByAddress,
@@ -271,4 +281,5 @@ export {
   setExecuted,
   getDecisionsByStatus,
   getDecisionsByExecutionStatus,
+  disputeDecision,
 };

@@ -5,7 +5,7 @@ import { textToArray } from "@/lib/textToArray";
 import Image from "next/image";
 import { TypewriterEffect } from "@/components/ui/typewriter-effect";
 
-const MinervaText = ({ text, height }) => {
+const MinervaText = ({ text, height, animate = true }) => {
   return (
     <div className="flex gap-3" style={{ height: height }}>
       <Image
@@ -21,6 +21,7 @@ const MinervaText = ({ text, height }) => {
           words={textToArray(text)}
           className="text-white text-sm sm:text-sm md:text-sm lg:text-sm font-normal text-left"
           cursorClassName="hidden"
+          willAnimate={animate}
         />
       </div>
     </div>

@@ -69,6 +69,7 @@ export default function DelegateButton() {
         onOpenChange={onOpenChange}
         isDismissable={!isDelegating}
         isKeyboardDismissDisabled={isDelegating}
+        hideCloseButton={isDelegating}
       >
         <ModalContent>
           {(onClose) => (

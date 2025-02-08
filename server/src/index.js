@@ -8,6 +8,7 @@ import daoRoutes from "./routes/daoRoute.js";
 import followRoutes from "./routes/followRoute.js";
 import redis from "./utils/redis.js";
 import {
+  addProposalToQueue,
   listenForProposals,
   loadDaoProposals,
   loadPendingDecisions,
@@ -15,8 +16,8 @@ import {
 } from "./utils/snapshot.js";
 import { bot } from "./utils/tg.js";
 import { DiscClient } from "./utils/discordBot.js";
-import { decisionQueue, scheduleQueue } from "./utils/Queue.js";
-import { getUsersToNotify } from "./utils/convex.js";
+import { decisionQueue } from "./utils/Queue.js";
+import utilsRoutes from "./routes/utilsRoute.js";
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +35,7 @@ app.use("/api/agents", agentRoutes);
 app.use("/api/proposals", proposalRoutes);
 app.use("/api/dao", daoRoutes);
 app.use("/api/follow", followRoutes);
+app.use("/api/utils", utilsRoutes);
 
 app.get("/", (req, res) => {
   res.send("Minerva Backend is running 🚀");
@@ -53,22 +55,37 @@ redis.on("error", (err) => {
   console.error("Redis connection error:", err);
 });
 
+// Force Methods
 app.get("/api/add-queue/:decisionId", async (req, res) => {
-  const { decisionId } = req.params;
-  await decisionQueue.add({ decisionId });
-  res.status(200).json({ message: "Decision added to queue" });
+  try {
+    const { decisionId } = req.params;
+
+    if (!decisionId) {
+      return res.status(400).json({ message: "Decision ID is required" });
+    }
+
+    await decisionQueue.add({ decisionId });
+    res.status(200).json({ message: "Decision added to queue" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-app.get("/api/add-schedule/:decisionId", async (req, res) => {
-  const { decisionId } = req.params;
-  await scheduleQueue.add({ decisionId });
-  res.status(200).json({ message: "Decision added to schedule" });
-});
+app.get("/api/addProposal/:daoId/:proposalId", async (req, res) => {
+  try {
+    const { daoId, proposalId } = req.params;
 
-app.get("/api/get-users-to-notify/:daoId", async (req, res) => {
-  const { daoId } = req.params;
-  const users = await getUsersToNotify(daoId);
-  res.status(200).json(users);
+    if (!daoId || !proposalId) {
+      return res
+        .status(400)
+        .json({ message: "DAO ID and Proposal ID are required" });
+    }
+
+    await addProposalToQueue(daoId, proposalId);
+    res.status(200).json({ message: "Proposal added to queue" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 // Start server

@@ -1,7 +1,7 @@
 "use client";
 
 import WalletCard from "@/components/ui/WalletCard";
-import { Check, Loader2, UserPlus, Users, Vote, X } from "lucide-react";
+import { Check, Loader2, Users, Vote, X } from "lucide-react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import daos from "@/utils/daoConfig";

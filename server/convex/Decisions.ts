@@ -195,3 +195,22 @@ export const getDecisionsByExecutionStatus = query({
     return decisions;
   },
 });
+
+export const disputeDecision = mutation({
+  args: {
+    api_key: v.string(),
+    decisionId: v.id("Decisions"),
+    finalDecision: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, decisionId, finalDecision } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    await ctx.db.patch(decisionId, {
+      FinalDecision: finalDecision,
+    });
+  },
+});

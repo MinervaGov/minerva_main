@@ -54,6 +54,7 @@ async function notifyNewProposalTG(
       counter++;
       if (counter == 30) {
         await delay(1000);
+        counter = 0;
       }
 
       bot.api.sendMessage(
@@ -80,6 +81,7 @@ async function notifyDecisionTG(users, title, choices, aiResponse) {
       counter++;
       if (counter == 30) {
         await delay(1000);
+        counter = 0;
       }
 
       bot.api.sendMessage(
@@ -89,6 +91,8 @@ async function notifyDecisionTG(users, title, choices, aiResponse) {
     );
     }
   }
+
+  return;
 }
 
 // Generic Texts

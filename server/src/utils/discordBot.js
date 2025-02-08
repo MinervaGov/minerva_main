@@ -17,20 +17,66 @@ let subCommand = {
         }
     ],
 
-    async execute({ int, client }) {
+    async execute({ int }) {
         const agentName = int.options.getString('agent');
         const authorId = int.user.id;
 
         try {
             await addSubscriptionDiscord(agentName, authorId);
-            client.users.fetch(authorId).send(`You are now subscribed to agent *${agentName}* ✅`)
-                .catch(console.error);
+            int.reply({ content: `You are now subscribed to agent **${agentName}** ✅`, ephemeral: false });
         }
         catch (error) {
             int.reply({ content: `Error: ${error}`, ephemeral: true });
         }
     },
 };
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function notifyProposalDiscord(users, snapshotSpaceId, proposalId, aiSummary) {
+    if (!users) {
+        return;
+    }
+
+    const proposalLink = `https://snapshot.box/#/s:${snapshotSpaceId}/proposal/${proposalId}`;
+
+    let counter = 0;
+    for (let agent of users) {
+        const agentDetails = await getAgentById(agent.agentId);
+        const agentName = agentDetails.name;
+        for (let user of agent.usersDisc) {
+            counter++;
+            if (counter == 30) {
+                await delay(1000);
+                counter = 0;
+            }
+            (await DiscClient.users.fetch(user)).send(`📢**NEW PROPOSAL ALERT**📢\n\nAgent: **${agentName}**\n\n${aiSummary}\n\nRead more: [Snapshot](${proposalLink})`);
+        }
+    }
+
+    return;
+}
+
+async function notifyDecisionDiscord(users, title, choices, aiResponse) {
+    if (!users) {
+        return;
+    }
+
+    let counter = 0;
+    for (let agent of users) {
+        const agentDetails = await getAgentById(agent.agentId);
+        const agentName = agentDetails.name;
+        for (let user of agent.usersDisc) {
+            counter++;
+            if (counter == 30) {
+                await delay(1000);
+                counter = 0;
+            }
+            (await DiscClient.users.fetch(user)).send(`✅*AGENT ${agentName} VOTED*✅\n\nTitle: ${title}\n\nVote: ${choices[parseInt(aiResponse.vote) - 1]}\n\nReason: ${aiResponse.reason}`);
+        }
+    }
+
+    return;
+}
 
 // Register command
 DiscClient.commands.set(subCommand.name.toLowerCase(), subCommand);
@@ -58,8 +104,8 @@ DiscClient.on("interactionCreate", (int) => {
             return DiscClient.slash.delete(int.commandName);
         }
 
-        command.execute({ int, DiscClient });
+        command.execute({ int });
     }
 });
 
-export default DiscClient;
+export { DiscClient, notifyProposalDiscord, notifyDecisionDiscord };

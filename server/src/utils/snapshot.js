@@ -15,6 +15,7 @@ import {
 import { summarizeProposal } from "./openai.js";
 import { decisionQueue, scheduleQueue } from "./Queue.js";
 import { notifyNewProposalTG } from "./tg.js";
+import { notifyProposalDiscord } from "./discordBot.js";
 
 dotenv.config();
 
@@ -125,6 +126,12 @@ const listenForProposals = async () => {
 
           const usersToNotify = await getUsersToNotify(dao.id);
           await notifyNewProposalTG(
+            usersToNotify,
+            dao.snapshotSpace,
+            currentProposal.id,
+            aiSummary
+          );
+          await notifyProposalDiscord(
             usersToNotify,
             dao.snapshotSpace,
             currentProposal.id,

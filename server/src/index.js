@@ -10,6 +10,7 @@ import redis from "./utils/redis.js";
 import { listenForProposals, loadDaoProposals } from "./utils/snapshot.js";
 import { bot } from "./utils/tg.js";
 import { decisionQueue, scheduleQueue } from "./utils/Queue.js";
+import { getUsersToNotify } from "./utils/convex.js";
 
 // Load environment variables
 dotenv.config();
@@ -54,6 +55,12 @@ app.get("/api/add-schedule/:decisionId", async (req, res) => {
   const { decisionId } = req.params;
   await scheduleQueue.add({ decisionId });
   res.status(200).json({ message: "Decision added to schedule" });
+});
+
+app.get("/api/get-users-to-notify/:daoId", async (req, res) => {
+  const { daoId } = req.params;
+  const users = await getUsersToNotify(daoId);
+  res.status(200).json(users);
 });
 
 // Start server

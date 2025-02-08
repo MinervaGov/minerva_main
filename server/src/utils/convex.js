@@ -183,6 +183,16 @@ const addSubscriptionTg = async (agentName, userTg) => {
   });
 };
 
+const addSubscriptionDiscord = async (agentName, userDisc) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.Subscriptions.AddSubscriptionDiscord, {
+    api_key: process.env.CONVEX_API_KEY,
+    agentName,
+    userDisc,
+  });
+};
+
 const getUsersToNotify = async (daoId) => {
   const client = new ConvexHttpClient(process.env.CONVEX_URL);
 
@@ -255,6 +265,7 @@ export {
   getDecisionById,
   getAgentById,
   addSubscriptionTg,
+  addSubscriptionDiscord,
   getUsersToNotify,
   setPrimaryDecision,
   setExecuted,

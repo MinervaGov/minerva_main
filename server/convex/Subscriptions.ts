@@ -10,10 +10,14 @@ export const AddSubscriptionTg = mutation({
   handler: async (ctx, args) => {
     const { api_key, agentName, userTg } = args;
 
-    const agent = await ctx.db
-      .query("agents")
-      .withSearchIndex("search_name", (q) => q.search("name", agentName))
-      .collect();
+    if (api_key !== process.env.API_KEY) {
+        throw new Error("Invalid API key");
+    }
+
+        const agent = await ctx.db
+            .query("agents")
+            .withSearchIndex("search_name", (q) => q.search("name", agentName))
+            .collect();
 
     if (agent.length === 0) {
       throw new Error("No such agent");
@@ -44,6 +48,54 @@ export const AddSubscriptionTg = mutation({
     }
   },
 });
+
+export const AddSubscriptionDiscord = mutation({
+    args: {
+      api_key: v.string(),
+      agentName: v.string(),
+      userDisc: v.string(),
+    },
+    handler: async (ctx, args) => {
+      const { api_key, agentName, userDisc } = args;
+  
+      if (api_key !== process.env.API_KEY) {
+          throw new Error("Invalid API key");
+      }
+  
+          const agent = await ctx.db
+              .query("agents")
+              .withSearchIndex("search_name", (q) => q.search("name", agentName))
+              .collect();
+  
+      if (agent.length === 0) {
+        throw new Error("No such agent");
+      }
+  
+      const agentId = agent[0]._id;
+      const row = await ctx.db
+        .query("Subscriptions")
+        .withIndex("by_agent", (q) => q.eq("agentId", agentId))
+        .first();
+  
+      if (row) {
+        const DiscUserList = row.usersDisc;
+        if (DiscUserList.includes(userDisc)) {
+          throw new Error("Agent already subscribed");
+        }
+  
+        DiscUserList.push(userDisc);
+        return await ctx.db.patch(row._id, {
+          usersDisc: DiscUserList
+        });
+      } else {
+        return await ctx.db.insert("Subscriptions", {
+          agentId: agentId,
+          usersTg: [],
+          usersDisc: [userDisc],
+        });
+      }
+    },
+  });
 
 export const getUsersToNotify = query({
   args: {

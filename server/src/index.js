@@ -14,6 +14,7 @@ import {
   loadQueuedDecisions,
 } from "./utils/snapshot.js";
 import { bot } from "./utils/tg.js";
+import DiscClient from "./utils/discordBot.js";
 import { decisionQueue, scheduleQueue } from "./utils/Queue.js";
 import { getUsersToNotify } from "./utils/convex.js";
 
@@ -78,3 +79,7 @@ app.listen(PORT, () => {
 
 // Start telegram bot
 bot.start();
+
+// Start discord bot
+const DiscToken = process.env.DISCORD_TOKEN;
+DiscClient.login(DiscToken);

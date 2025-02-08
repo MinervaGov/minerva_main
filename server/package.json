@@ -38,6 +38,7 @@
     "convex": "^1.18.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "discord.js": "14.15.3",
     "dotenv": "^16.4.5",
     "ethers": "^5.7.2",
     "express": "^4.21.1",

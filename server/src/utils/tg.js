@@ -83,12 +83,10 @@ async function notifyDecisionTG(users, title, choices, aiResponse) {
       }
 
       bot.api.sendMessage(
-        user,
-        `✅*AGENT ${agentName} VOTED✅\n\nTitle: ${title}\n\nVote: ${
-          choices[parseInt(aiResponse.vote) - 1]
-        }\n\nReason: ${aiResponse.reason}`,
+        user, 
+        `✅*AGENT ${agentName} VOTED*✅\n\nTitle: ${title}\n\nVote: ${choices[parseInt(aiResponse.vote) - 1]}\n\nReason: ${aiResponse.reason}`,
         { parse_mode: "Markdown" }
-      );
+    );
     }
   }
 }

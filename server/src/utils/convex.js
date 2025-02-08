@@ -179,7 +179,7 @@ const addSubscriptionTg = async (agentName, userTg) => {
   return await client.mutation(api.Subscriptions.AddSubscriptionTg, {
     api_key: process.env.CONVEX_API_KEY,
     agentName,
-    userTg
+    userTg,
   });
 };
 
@@ -195,6 +195,25 @@ const setPrimaryDecision = async (
     decisionId,
     primaryDecision,
     primaryReason,
+  });
+};
+
+const setExecuted = async (decisionId, executed) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.mutation(api.Decisions.setExecuted, {
+    api_key: process.env.CONVEX_API_KEY,
+    decisionId,
+    executed,
+  });
+};
+
+const getDecisionsByStatus = async (status) => {
+  const client = new ConvexHttpClient(process.env.CONVEX_URL);
+
+  return await client.query(api.Decisions.getDecisionsByStatus, {
+    api_key: process.env.CONVEX_API_KEY,
+    status,
   });
 };
 
@@ -219,4 +238,6 @@ export {
   getAgentById,
   addSubscriptionTg,
   setPrimaryDecision,
+  setExecuted,
+  getDecisionsByStatus,
 };

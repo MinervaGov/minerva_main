@@ -118,3 +118,53 @@ export const setPrimaryDecision = mutation({
     });
   },
 });
+
+export const setExecuted = mutation({
+  args: {
+    api_key: v.string(),
+    decisionId: v.id("Decisions"),
+    executed: v.union(
+      v.literal("pending"),
+      v.literal("queued"),
+      v.literal("failed"),
+      v.literal("success"),
+      v.literal("missed")
+    ),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, decisionId, executed } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    await ctx.db.patch(decisionId, {
+      executed,
+    });
+  },
+});
+
+export const getDecisionsByStatus = query({
+  args: {
+    api_key: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("decided"),
+      v.literal("failed")
+    ),
+  },
+  handler: async (ctx, args) => {
+    const { api_key, status } = args;
+
+    if (api_key !== process.env.API_KEY) {
+      throw new Error("Invalid API key");
+    }
+
+    const decisions = await ctx.db
+      .query("Decisions")
+      .withIndex("by_status", (q) => q.eq("status", status))
+      .collect();
+
+    return decisions;
+  },
+});

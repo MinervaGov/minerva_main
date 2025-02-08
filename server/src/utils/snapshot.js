@@ -2,7 +2,12 @@ import axios from "axios";
 import daos from "./daoConfig.js";
 import dotenv from "dotenv";
 import redis from "./redis.js";
-import { addBulkDecision, addProposal, getAgentsByDaoId } from "./convex.js";
+import {
+  addBulkDecision,
+  addProposal,
+  getAgentsByDaoId,
+  getDecisionsByStatus,
+} from "./convex.js";
 import { summarizeProposal } from "./openai.js";
 import { decisionQueue } from "./Queue.js";
 
@@ -130,4 +135,19 @@ const listenForProposals = async () => {
   }, 60000);
 };
 
-export { fetchDaoData, loadDaoProposals, listenForProposals };
+const loadPendingDecisions = async () => {
+  const decisions = await getDecisionsByStatus("pending");
+
+  decisions.forEach((decision) => {
+    decisionQueue.add({ decisionId: decision._id });
+  });
+
+  console.log(`Loaded ${decisions.length} pending decisions`);
+};
+
+export {
+  fetchDaoData,
+  loadDaoProposals,
+  listenForProposals,
+  loadPendingDecisions,
+};

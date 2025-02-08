@@ -7,6 +7,7 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { CdpAgentkit } from "@coinbase/cdp-agentkit-core";
 import { CdpTool, CdpToolkit } from "@coinbase/cdp-langchain";
 import { changeDecisionStatus, setPrimaryDecision } from "./convex.js";
+import { scheduleDecisions } from "./scheduler.js";
 
 dotenv.config();
 
@@ -202,6 +203,8 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
     );
 
     console.log("Decision Processed");
+
+    await scheduleDecisions(decisionId);
   } catch (error) {
     console.log("Decision Failed to process", error);
     await changeDecisionStatus(decisionId, "failed");

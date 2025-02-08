@@ -1,11 +1,20 @@
 import { z } from "zod";
-import axios from "axios";
 import dotenv from "dotenv";
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage } from "@langchain/core/messages";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { CdpAgentkit } from "@coinbase/cdp-agentkit-core";
 import { CdpTool, CdpToolkit } from "@coinbase/cdp-langchain";
+import {
+  getAgentById,
+  getDecisionById,
+  getProposalById,
+  setExecuted,
+} from "./convex.js";
+import axios from "axios";
+import daos from "./daoConfig.js";
+import { PrivyClient } from "@privy-io/server-auth";
+import { scheduleQueue } from "./Queue.js";
 
 dotenv.config();
 
@@ -23,14 +32,98 @@ const CastVoteInput = z
   .describe("Cast Vote Input");
 
 async function castVote(wallet, args) {
+  const { decisionId } = CastVoteInput.parse(args);
   try {
-    const { decisionId } = CastVoteInput.parse(args);
+    const decision = await getDecisionById(decisionId);
+    const proposal = await getProposalById(decision.proposalId);
+    const agent = await getAgentById(decision.agentId);
+    const dao = daos.find((dao) => dao.id === proposal.daoId);
 
-    console.log(decisionId);
+    if (!decision || !proposal || !agent || !dao) {
+      return false;
+    }
+
+    if (decision.status !== "decided") {
+      return false;
+    }
+
+    if (
+      decision.executed !== "queued" &&
+      decision.executed !== "success" &&
+      decision.executed !== "failed"
+    ) {
+      return false;
+    }
+
+    if (proposal.endDate < new Date().getTime() / 1000) {
+      await setExecuted(decisionId, "missed");
+      return false;
+    }
+
+    const domain = {
+      name: "snapshot",
+      version: "0.1.4",
+    };
+
+    // Types definition
+    const types = {
+      Vote: [
+        { name: "from", type: "address" },
+        { name: "space", type: "string" },
+        { name: "timestamp", type: "uint64" },
+        { name: "proposal", type: "bytes32" },
+        { name: "choice", type: "uint32" },
+        { name: "reason", type: "string" },
+        { name: "app", type: "string" },
+        { name: "metadata", type: "string" },
+      ],
+    };
+
+    // Message data
+    const message = {
+      from: agent.walletAddress,
+      space: dao.snapshotSpace,
+      timestamp: Number((new Date().getTime() / 1000).toFixed(0)),
+      proposal: proposal.snapshotId,
+      choice: Number(decision.primaryDecision),
+      reason: decision.primaryReason,
+      app: "minervagov",
+      metadata: "{}",
+    };
+
+    const privy = new PrivyClient(
+      process.env.PRIVY_APP_ID,
+      process.env.PRIVY_APP_SECRET
+    );
+
+    const { signature } = await privy.walletApi.ethereum.signTypedData({
+      walletId: agent.privyWalletId,
+      typedData: {
+        domain,
+        types,
+        message,
+        primaryType: "Vote",
+      },
+    });
+
+    const response = await axios.post("https://testnet.seq.snapshot.org/", {
+      address: agent.walletAddress,
+      sig: signature,
+      data: {
+        domain,
+        types,
+        message,
+      },
+    });
+
+    console.log(response.data);
+
+    await setExecuted(decisionId, "success");
 
     return true;
   } catch (error) {
     console.log(error);
+    await setExecuted(decisionId, "failed");
     return false;
   }
 }
@@ -90,29 +183,63 @@ async function initializeAgent() {
 }
 
 const processScheduledDecisions = async (decisionId) => {
-  const { agent, config } = await initializeAgent();
+  try {
+    const { agent, config } = await initializeAgent();
 
-  const message = `cast_vote
+    const message = `cast_vote
     
     Decision Id : ${decisionId}
     `;
 
-  const stream = await agent.stream(
-    { messages: [new HumanMessage(message)] },
-    config
-  );
+    const stream = await agent.stream(
+      { messages: [new HumanMessage(message)] },
+      config
+    );
 
-  let response = "";
+    let response = "";
 
-  for await (const chunk of stream) {
-    if ("agent" in chunk) {
-      //   response += chunk.agent.messages[0].content;
-    } else if ("tools" in chunk) {
-      response += chunk.tools.messages[0].content;
+    for await (const chunk of stream) {
+      if ("agent" in chunk) {
+        //   response += chunk.agent.messages[0].content;
+      } else if ("tools" in chunk) {
+        response += chunk.tools.messages[0].content;
+      }
     }
-  }
 
-  console.log(response);
+    if (response.includes("true")) {
+      console.log("Vote casted");
+    } else {
+      console.log("Vote not casted");
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export { processScheduledDecisions };
+const scheduleDecisions = async (decisionId) => {
+  const decision = await getDecisionById(decisionId);
+
+  if (!decision) {
+    throw new Error("Decision not found");
+  }
+
+  const agent = await getAgentById(decision.agentId);
+  const proposal = await getProposalById(decision.proposalId);
+
+  if (!agent || !proposal) {
+    throw new Error("Agent or Proposal not found");
+  }
+
+  if (proposal.endDate < new Date().getTime() / 1000) {
+    throw new Error("Proposal has already ended");
+  }
+
+  const delay =
+    proposal.endDate * 1000 - agent.delayPeriod - new Date().getTime();
+
+  await scheduleQueue.add({ decisionId }, { delay });
+
+  console.log(`Decision ${decisionId} scheduled for ${delay}ms`);
+};
+
+export { processScheduledDecisions, scheduleDecisions };

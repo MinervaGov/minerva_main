@@ -38,9 +38,10 @@ First we need to start a gaia node for inference.
 ```bash
 curl -sSfL 'https://github.com/MinervaGov/minerva_main/raw/refs/heads/main/gaia/install.sh' | bash
 ```
+> This will create a gaianet folder in your $HOME directory
 2. Follow on screen instruction at the end to finalize installation.
 ```bash
-cd gaianet
+cd $HOME/gaianet
 ```
 3. Download knowledge base
 ```bash

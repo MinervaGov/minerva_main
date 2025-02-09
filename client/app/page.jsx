@@ -3,13 +3,15 @@ import Image from "next/image";
 
 import LandingNavbar from "@/components/layout/landing/LandingNavbar";
 import InfiniteScroll from "@/components/layout/landing/InfiniteScroll";
+import StickyScrollSection from "@/components/layout/landing/StickyScrollSection";
+import SupportedDAO from "@/components/layout/landing/SupportedDAO";
 
 export default function Home() {
   return (
     <main className="overflow-hidden space-y-20 pt-8">
       <LandingNavbar />
 
-      <div className="relative w-screen overflow-hidden px-4">
+      <div className="relative w-screen  px-4">
         <section>
           <div className="flex gap-8">
             <p className="capitalize text-2xl font-bold [writing-mode:vertical-rl] rotate-180 text-center">
@@ -17,7 +19,7 @@ export default function Home() {
             </p>
 
             <div>
-              <h1 className="font-bold text-8xl max-w-7xl mb-8">
+              <h1 className="font-bold text-6xl max-w-7xl mb-8">
                 Automate Governance <br /> with{" "}
                 <span className="text-purple-500">AI-Powered</span> <br /> DAO
                 Voting
@@ -37,11 +39,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex gap-8 mt-10">
-            <p className="capitalize text-2xl font-bold [writing-mode:vertical-rl] rotate-180 text-center visible md:invisible">
-              HI
-            </p>
-
+          <div className="flex gap-8 mt-10 ml-16">
             <div className="space-y-2">
               <p className="text-2xl font-bold">Get Notification Via</p>
 
@@ -66,16 +64,41 @@ export default function Home() {
           </div>
         </section>
 
-        <section>
-          <InfiniteScroll />
+        <section className="mt-36">
+          <InfiniteScroll text="MAKE YOUR VOICES HEARD" />
         </section>
 
+        <section className="mt-32">
+          <StickyScrollSection />
+        </section>
+
+        <section className="-mt-52">
+          <InfiniteScroll text="GOVERNANCE MADE EASY" />
+        </section>
+
+        <SupportedDAO />
+
+        <div className="w-full pb-20">
+          <div className="flex flex-col items-center text-center justify-center h-[500px] max-w-[900px] mx-auto">
+            <div className="text-white text-5xl">
+              Built for thousands of delegators to make their voices heard
+            </div>
+
+            <div className="text-white text-xl mt-10">at</div>
+
+            <div className="text-white text-3xl mt-1 font-semibold">
+              ETH Global Agentic <p className="text-6xl font-bold">HACKATHON</p>{" "}
+              <p className="">2025</p>
+            </div>
+          </div>
+        </div>
+
         <Image
-          src="/landing/robot.png"
+          src="/minerva/avatar.jpeg"
           alt="Hero"
-          width={640}
-          height={1121}
-          className="absolute right-0 top-32 -rotate-12"
+          width={500}
+          height={500}
+          className="absolute right-16 top-0 rounded-full"
         />
       </div>
     </main>

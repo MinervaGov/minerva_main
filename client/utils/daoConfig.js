@@ -6,14 +6,20 @@ const daos = [
     name: "Arbitrum",
     chainId: 42161,
   },
-  // {
-  //   id: "lido",
-  //   snapshotSpace: "lido",
-  // },
-  // {
-  //   id: "aave",
-  //   snapshotSpace: "aave",
-  // },
+  {
+    id: "lido",
+    snapshotSpace: "lido-snapshot.eth",
+    logo: "/dao/lido-logo.png",
+    name: "Lido",
+    chainId: 1,
+  },
+  {
+    id: "aave",
+    snapshotSpace: "aave",
+    logo: "/dao/aave-logo.png",
+    name: "Aave",
+    chainId: 1,
+  },
 ];
 
 export default daos;

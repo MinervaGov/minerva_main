@@ -6,6 +6,13 @@ const chains = [
     gasLimit: 1000000,
     logo: "/dao/arb-logo.png",
   },
+  {
+    id: 1,
+    name: "Ethereum",
+    rpcUrl: "https://eth.drpc.org",
+    gasLimit: 1000000,
+    logo: "/dao/eth-logo.png",
+  },
 ];
 
 export default chains;

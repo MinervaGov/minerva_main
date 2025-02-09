@@ -2,6 +2,12 @@ import {
   getArbitrumDelegatePayload,
   getArbitrumDelegates,
   getArbitrumVotingPower,
+  getLidoDelegatePayload,
+  getLidoDelegates,
+  getLidoVotingPower,
+  getAaveDelegatePayload,
+  getAaveDelegates,
+  getAaveVotingPower,
 } from "../utils/dao.js";
 
 const getVp = async (req, res) => {
@@ -12,6 +18,10 @@ const getVp = async (req, res) => {
 
     if (daoId === "arbitrum") {
       votingPower = await getArbitrumVotingPower(walletAddress, daoId);
+    } else if (daoId === "lido") {
+      votingPower = await getLidoVotingPower(walletAddress, daoId);
+    } else if (daoId === "aave") {
+      votingPower = await getAaveVotingPower(walletAddress, daoId);
     }
 
     return res.json({
@@ -34,6 +44,10 @@ const getDelegates = async (req, res) => {
 
     if (daoId === "arbitrum") {
       delegates = await getArbitrumDelegates(walletAddress, daoId);
+    } else if (daoId === "lido") {
+      delegates = await getLidoDelegates(walletAddress, daoId);
+    } else if (daoId === "aave") {
+      delegates = await getAaveDelegates(walletAddress, daoId);
     }
 
     return res.json({
@@ -63,12 +77,34 @@ const getDelegatePayload = async (req, res) => {
         delegatePayload,
         contractAddress,
       });
-    } else {
+    } else if (daoId === "lido") {
+      const { contractAddress, delegatePayload } = await getLidoDelegatePayload(
+        targetAddress,
+        daoId
+      );
+
       return res.json({
-        success: false,
-        message: "DAO not found",
+        success: true,
+        delegatePayload,
+        contractAddress,
+      });
+    } else if (daoId === "aave") {
+      const { contractAddress, delegatePayload } = await getAaveDelegatePayload(
+        targetAddress,
+        daoId
+      );
+
+      return res.json({
+        success: true,
+        delegatePayload,
+        contractAddress,
       });
     }
+
+    return res.json({
+      success: false,
+      message: "DAO not found",
+    });
   } catch (error) {
     return res.json({
       success: false,

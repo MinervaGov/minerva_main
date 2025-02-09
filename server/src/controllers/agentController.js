@@ -190,7 +190,7 @@ const createAgent = async (req, res) => {
       privyWalletId: id,
       daoId,
       profileType,
-      visibility: visibility === "true" ? "public" : "private",
+      visibility: visibility === true ? "private" : "public",
       delayPeriod: parseInt(delayPeriod),
       walletAddress: address,
       tags,

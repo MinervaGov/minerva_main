@@ -22,11 +22,12 @@ let subCommand = {
         const authorId = int.user.id;
 
         try {
-            await addSubscriptionDiscord(agentName, authorId);
-            int.reply({ content: `You are now subscribed to agent **${agentName}** ✅`, ephemeral: false });
+            await addSubscriptionDiscord(agentName, authorId);            
+            return int.editReply({ content: `You are now subscribed to agent **${agentName}** ✅`, ephemeral: false });
+            
         }
         catch (error) {
-            int.reply({ content: `Error: ${error}`, ephemeral: true });
+            return int.editReply({ content: `Error: ${error}`, ephemeral: true });
         }
     },
 };
@@ -49,7 +50,7 @@ async function notifyProposalDiscord(users, snapshotSpaceId, proposalId, aiSumma
                 await delay(1000);
                 counter = 0;
             }
-            (await DiscClient.users.fetch(user)).send(`📢**NEW PROPOSAL ALERT**📢\n\nAgent: **${agentName}**\n\n${aiSummary}\n\nRead more: [Snapshot](${proposalLink})`);
+            (await DiscClient.users.fetch(user)).send(`📢**NEW PROPOSAL ALERT**📢\n\nAgent: **${agentName}**\n\n${aiSummary}\n\nRead more here: [Snapshot](${proposalLink})`);
         }
     }
 
@@ -71,7 +72,7 @@ async function notifyDecisionDiscord(users, title, choices, aiResponse) {
                 await delay(1000);
                 counter = 0;
             }
-            (await DiscClient.users.fetch(user)).send(`✅*AGENT ${agentName} VOTED*✅\n\nTitle: ${title}\n\nVote: ${choices[parseInt(aiResponse.vote) - 1]}\n\nReason: ${aiResponse.reason}`);
+            (await DiscClient.users.fetch(user)).send(`✅**AGENT ${agentName} VOTED**✅\n\nTitle: ${title}\n\nVote: ${choices[parseInt(aiResponse.vote) - 1]}\n\nReason: ${aiResponse.reason}`);
         }
     }
 
@@ -94,11 +95,14 @@ DiscClient.on("ready", (client) => {
     client.application.commands.set([subCommand]);
 });
 
-DiscClient.on("interactionCreate", (int) => {
+DiscClient.on("interactionCreate", async (int) => {
+    await int.deferReply({ ephemeral: false });
+
     if (int.type === InteractionType.ApplicationCommand) {
         const command = DiscClient.commands.get(int.commandName);
 
         if (!command) {
+            const errorEmbed = new EmbedBuilder().setColor('#ff0000');
             errorEmbed.setDescription(`❌ | Some error occured !`);
             int.reply({ embeds: [errorEmbed], ephemeral: true });
             return DiscClient.slash.delete(int.commandName);

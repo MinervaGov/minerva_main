@@ -123,7 +123,7 @@ async function castVote(wallet, args) {
       },
     });
 
-    const response = await axios.post("https://testnet.seq.snapshot.org/", {
+    const response = await axios.post(process.env.SNAPSHOT_VOTING_URL, {
       address: agent.walletAddress,
       sig: signature,
       data: {

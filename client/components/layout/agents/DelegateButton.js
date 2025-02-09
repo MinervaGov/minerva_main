@@ -89,7 +89,7 @@ export default function DelegateButton() {
                 >
                   {" "}
                   <p className="font-bold text-2xl">{agent?.name}</p>
-                  <p className="text-xs text-gray-400 absolute -bottom-3 right-0">
+                  <p className="text-xs text-gray-400 absolute -bottom-3 left-0">
                     .minervagov.eth
                   </p>
                   <Image

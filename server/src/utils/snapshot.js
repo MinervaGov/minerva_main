@@ -213,76 +213,88 @@ const listenForProposals = async () => {
 };
 
 const loadPendingDecisions = async () => {
-  const decisions = await getDecisionsByStatus("pending");
+  try {
+    const decisions = await getDecisionsByStatus("pending");
 
-  decisions.forEach((decision) => {
-    decisionQueue.add({ decisionId: decision._id });
-  });
+    decisions.forEach((decision) => {
+      decisionQueue.add({ decisionId: decision._id });
+    });
 
-  console.log(`Loaded ${decisions.length} pending decisions`);
+    console.log(`Loaded ${decisions.length} pending decisions`);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const loadQueuedDecisions = async () => {
-  const decisions = await getDecisionsByExecutionStatus("queued");
+  try {
+    const decisions = await getDecisionsByExecutionStatus("queued");
 
-  await Promise.all(
-    decisions.map(async (decision) => {
-      const agent = await getAgentById(decision.agentId);
-      const proposal = await getProposalById(decision.proposalId);
+    await Promise.all(
+      decisions.map(async (decision) => {
+        const agent = await getAgentById(decision.agentId);
+        const proposal = await getProposalById(decision.proposalId);
 
-      const delay =
-        proposal.endDate * 1000 - agent.delayPeriod - new Date().getTime();
+        const delay =
+          proposal.endDate * 1000 - agent.delayPeriod - new Date().getTime();
 
-      scheduleQueue.add({ decisionId: decision._id }, { delay });
-    })
-  );
+        scheduleQueue.add({ decisionId: decision._id }, { delay });
+      })
+    );
 
-  console.log(`Loaded ${decisions.length} queued decisions`);
+    console.log(`Loaded ${decisions.length} queued decisions`);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const addProposalToQueue = async (daoId, proposalId) => {
-  const dao = daos.find((dao) => dao.id === daoId);
+  try {
+    const dao = daos.find((dao) => dao.id === daoId);
 
-  if (!dao) {
-    throw new Error("DAO not found");
+    if (!dao) {
+      throw new Error("DAO not found");
+    }
+
+    const proposal = await fetchProposalById(daoId, proposalId);
+    const aiSummary = await summarizeProposal(proposal.body);
+
+    const convexProposalId = await addProposal({
+      snapshotId: proposal.id,
+      daoId: dao.id,
+      title: proposal.title,
+      description: proposal.body,
+      choices: proposal.choices,
+      endDate: parseInt(proposal.end),
+      aiSummary: aiSummary,
+    });
+
+    const usersToNotify = await getUsersToNotify(dao.id);
+    await notifyNewProposalTG(
+      usersToNotify,
+      dao.snapshotSpace,
+      proposal.id,
+      aiSummary
+    );
+    await notifyProposalDiscord(
+      usersToNotify,
+      dao.snapshotSpace,
+      proposal.id,
+      aiSummary
+    );
+
+    const agents = await getAgentsByDaoId(dao.id);
+
+    const agentIds = agents.map((agent) => agent._id);
+
+    const decisionIds = await addBulkDecision(convexProposalId, agentIds);
+
+    decisionIds.forEach((decisionId) => {
+      decisionQueue.add({ decisionId });
+    });
+  } catch (error) {
+    console.log(error);
   }
-
-  const proposal = await fetchProposalById(daoId, proposalId);
-  const aiSummary = await summarizeProposal(proposal.body);
-
-  const convexProposalId = await addProposal({
-    snapshotId: proposal.id,
-    daoId: dao.id,
-    title: proposal.title,
-    description: proposal.body,
-    choices: proposal.choices,
-    endDate: parseInt(proposal.end),
-    aiSummary: aiSummary,
-  });
-
-  const usersToNotify = await getUsersToNotify(dao.id);
-  await notifyNewProposalTG(
-    usersToNotify,
-    dao.snapshotSpace,
-    proposal.id,
-    aiSummary
-  );
-  await notifyProposalDiscord(
-    usersToNotify,
-    dao.snapshotSpace,
-    proposal.id,
-    aiSummary
-  );
-
-  const agents = await getAgentsByDaoId(dao.id);
-
-  const agentIds = agents.map((agent) => agent._id);
-
-  const decisionIds = await addBulkDecision(convexProposalId, agentIds);
-
-  decisionIds.forEach((decisionId) => {
-    decisionQueue.add({ decisionId });
-  });
 };
 
 export {

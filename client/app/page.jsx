@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -5,8 +7,10 @@ import LandingNavbar from "@/components/layout/landing/LandingNavbar";
 import InfiniteScroll from "@/components/layout/landing/InfiniteScroll";
 import StickyScrollSection from "@/components/layout/landing/StickyScrollSection";
 import SupportedDAO from "@/components/layout/landing/SupportedDAO";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   return (
     <main className="overflow-hidden space-y-20 pt-8">
       <LandingNavbar />
@@ -44,14 +48,22 @@ export default function Home() {
               <p className="text-2xl font-bold">Get Notification Via</p>
 
               <div className="flex items-center gap-2">
-                <Image
-                  src="/landing/telegram.svg"
-                  alt="Telegram"
-                  width={48}
-                  height={48}
-                />
+                <div
+                  className="rounded-full  w-12 h-12 flex justify-center items-center cursor-pointer"
+                  onClick={() => router.push("/tg")}
+                >
+                  <Image
+                    src="/landing/telegram.svg"
+                    alt="Telegram"
+                    width={48}
+                    height={48}
+                  />
+                </div>
 
-                <div className="rounded-full bg-white w-12 h-12 flex justify-center items-center">
+                <div
+                  className="rounded-full bg-white w-12 h-12 flex justify-center items-center cursor-pointer"
+                  onClick={() => router.push("/discord")}
+                >
                   <Image
                     src="/landing/discord.svg"
                     alt="Discord"

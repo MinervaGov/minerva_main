@@ -22,6 +22,7 @@
     "@coinbase/cdp-langchain": "^0.0.15",
     "@coinbase/coinbase-sdk": "^0.17.0",
     "@ethersproject/hdnode": "^5.7.0",
+    "@google/generative-ai": "^0.22.0",
     "@grammyjs/conversations": "^1.2.0",
     "@langchain/core": "^0.3.39",
     "@langchain/langgraph": "^0.2.44",

@@ -27,37 +27,8 @@ node >= 22 🟢
 pnpm >= 9.14.1 📦
 ```
 
-## 🤖 Gaianet node
-First we need to start a gaia node for inference.
-### Requirements
-- CUDA enabled GPU (Make sure CUDA toolkit is installed)
-- Minimum 16GB VRAM, Recommended 24GB (for our config)
-- 12 GB of storage for models only
-### Steps to run
-1. Install node
-```bash
-curl -sSfL 'https://github.com/MinervaGov/minerva_main/raw/refs/heads/main/gaia/install.sh' | bash
-```
-> This will create a gaianet folder in your $HOME directory
-2. Follow on screen instruction at the end to finalize installation.
-```bash
-cd $HOME/gaianet
-```
-3. Download knowledge base
-```bash
-wget https://chibi.palbro.tech/api/file/64713428-0580-45c6-817f-5543a455a5cb/download -O comb.tar.gz
-```
-4. Edit the config.json file with [this](https://github.com/MinervaGov/minerva_main/blob/main/gaia/config.json)
-
-5. Initialize node
-```bash
-gaianet init
-```
-6. Start the node
-```bash
-gaianet start
-```
-The gaianet domain link in the output will be the gaianet api url.
+## 🤖 Gemini API
+TODO
 
 ## ⚙️ Backend
 ### Pre-requisite

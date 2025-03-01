@@ -14,6 +14,7 @@ import {
 import { scheduleDecisions } from "./scheduler.js";
 import { notifyDecisionTG } from "./tg.js";
 import { notifyDecisionDiscord } from "./discordBot.js";
+import { sendReqGemini } from "./geminiUtil.js";
 
 dotenv.config();
 
@@ -54,40 +55,9 @@ async function getGaiaMessage(wallet, args) {
       responseFormat,
     } = GaiaMessageInput.parse(args);
 
-    const body = {
-      messages: [
-        {
-          role: "user",
-          content: `You are given a proposal from ${daoId} DAO. Your task is to determine the appropriate vote based on the provided character profile. The voting type and available choices are also specified—select the most suitable option accordingly.
-                ### **Proposal Details:**
-                ${proposalDetails}
-                ### **Decision Criteria:**
-                ${decisionCriteria}
-                ### **Character Profile:**
-                ${characterProfile}
-                ### **Tags:**
-                ${tags}
-                ### **Response Format:**  
-                Reply in the following **JSON format**:
-                ${responseFormat}
+    const res = sendReqGemini(daoId, proposalDetails, decisionCriteria, characterProfile, tags, responseFormat);
 
-                Give the output in only JSON format, and nothing else
-                `,
-        },
-      ],
-    };
-
-    const response = await axios({
-      method: "post",
-      url: `${process.env.GAIA_API_URL}/v1/chat/completions`,
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify(body),
-    });
-
-    return response.data.choices[0].message.content;
+    return res;
   } catch (err) {
     console.log(err);
   }

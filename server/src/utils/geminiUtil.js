@@ -129,7 +129,8 @@ async function sendReqGemini(
                 Reply in the following **JSON format**:
                 ${responseFormat}
 
-                Give the output in only JSON format, and nothing else
+                Give the output only in the JSON format mentioned, and nothing else.
+                Also make sure to **not rename** the keys in the JSON.
                 `;
 
   const result = await chatSession.sendMessage(prompt);

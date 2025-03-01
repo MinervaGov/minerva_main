@@ -55,7 +55,14 @@ async function getGaiaMessage(wallet, args) {
       responseFormat,
     } = GaiaMessageInput.parse(args);
 
-    const res = sendReqGemini(daoId, proposalDetails, decisionCriteria, characterProfile, tags, responseFormat);
+    const res = sendReqGemini(
+      daoId,
+      proposalDetails,
+      decisionCriteria,
+      characterProfile,
+      tags,
+      responseFormat
+    );
 
     return res;
   } catch (err) {
@@ -140,14 +147,14 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
       ${
         agentInput.profileType === "twitter"
           ? `
-      - Character Profile : ${agentInput.twitterProfile.charProfile}
+      - Character Profile : ${JSON.stringify(agentInput.twitterProfile.charProfile)}
 
       - Tags : Based on Character Profile
       `
           : `
       - Character Profile : Based on Tags
     
-      - Tags : ${agentInput.tags}
+      - Tags : ${JSON.stringify(agentInput.tags)}
       `
       }
       - Response Format : 
@@ -186,7 +193,10 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
       parsedResponse.reason
     );
 
-    const usersToNotify = await getUsersToNotify(proposal.daoId, agentInput._id);
+    const usersToNotify = await getUsersToNotify(
+      proposal.daoId,
+      agentInput._id
+    );
     await notifyDecisionTG(
       usersToNotify,
       proposal.title,
@@ -201,6 +211,8 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
     );
 
     console.log("Decision Processed");
+
+    await changeDecisionStatus(decisionId, "decided");
 
     await scheduleDecisions(decisionId);
 

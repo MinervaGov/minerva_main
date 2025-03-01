@@ -35,7 +35,7 @@ export default function Home() {
               </p>
 
               <Link
-                href="/sign-in"
+                href="/agent-gallery"
                 className="block w-fit border border-gray-100 text-white py-3 px-6 text-sm hover:bg-white hover:text-black transition-[colors,transform] text-center active:scale-95 font-bold "
               >
                 Launch App
@@ -99,7 +99,7 @@ export default function Home() {
             <div className="text-white text-xl mt-10">at</div>
 
             <div className="text-white text-3xl mt-1 font-semibold">
-              ETH Global Agentic <p className="text-6xl font-bold">HACKATHON</p>{" "}
+            Seedify’s AI Agent <p className="text-6xl font-bold">HACKATHON</p>{" "}
               <p className="">2025</p>
             </div>
           </div>

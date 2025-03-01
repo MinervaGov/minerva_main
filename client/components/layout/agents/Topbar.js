@@ -7,12 +7,15 @@ import { useSelector } from "react-redux";
 import daos from "@/utils/daoConfig";
 import DelegateButton from "./DelegateButton";
 import useSelectAgent from "@/hooks/useSelectAgent";
+import { Button } from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 export default function TopBar() {
   const agent = useSelector((state) => state.agent.agent);
   const isLoading = useSelector((state) => state.agent.isLoading);
   const dao = agent ? daos.find((dao) => dao.id === agent.daoId) : null;
   const votingPower = useSelector((state) => state.agent.votingPower);
+  const router = useRouter();
   const followers = useSelector((state) => state.agent.followers);
   const { followAgent, unfollowAgent } = useSelectAgent();
 
@@ -69,7 +72,19 @@ export default function TopBar() {
             )}
           </div>
         </div>
-        <WalletCard />
+        <div className="flex gap-2 items-center">
+          <WalletCard />
+          <Button
+            onPress={() => {
+              router.push("/agent-gallery");
+            }}
+            className="bg-transparent text-white border border-white/50 hover:bg-white/10"
+          >
+            <div className="flex items-center gap-2">
+              <p>Agent Gallery</p>
+            </div>
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center justify-between w-full">

@@ -13,8 +13,8 @@ const CreateAgentPage = () => {
       right={
         <Image
           src="/minerva/avatar.jpeg"
-          width={500}
-          height={500}
+          width={2000}
+          height={2000}
           className=" object-cover w-full h-full"
           alt="signin-image"
         />

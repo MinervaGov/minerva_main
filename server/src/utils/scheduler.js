@@ -248,18 +248,21 @@ const scheduleDecisions = async (decisionId) => {
   const decision = await getDecisionById(decisionId);
 
   if (!decision) {
-    throw new Error("Decision not found");
+    console.log("Decision not found");
+    return;
   }
 
   const agent = await getAgentById(decision.agentId);
   const proposal = await getProposalById(decision.proposalId);
 
   if (!agent || !proposal) {
-    throw new Error("Agent or Proposal not found");
+    console.log("Agent or Proposal not found");
+    return;
   }
 
   if (proposal.endDate < new Date().getTime() / 1000) {
-    throw new Error("Proposal has already ended");
+    console.log("Proposal has already ended");
+    return;
   }
 
   const delay =

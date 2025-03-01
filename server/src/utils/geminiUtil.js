@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import fs from 'fs';
+import fs from "fs";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -75,36 +75,47 @@ Character profile can be of **two** types. A detailed json or just a few charcte
 "DeFi", "NFTs", "Gaming", "Metaverse", "DAOs", "Privacy", "Security", "Regulation", "Sustainability", "Staking", "Yield Farming", "Layer 2", "Cross-chain", "Stablecoins", "Tokenomics", "Infrastructure", "Oracles", "AI & Blockchain", "Web3 Social", "Decentralized Identity", "Public Goods", "Grants & Funding", "Governance Efficiency", "Protocol Upgrades", "Risk Management", "Human Rights", "Ethics & Morality", "Democratic Participation", "Collective Decision-Making", "Voting Accessibility", "User Experience", "Economic Equality", "Behavioral Economics", "Community Engagement", "Bias & Fairness", "Transparency", "Reputation Systems", "Incentive Structures", "Free Speech", "Consensus Mechanisms", "Cognitive Bias", "Psychological Safety", "Identity & Anonymity", "Social Impact", "Moral Hazard", "Personalization & Autonomy", "Decentralized Ethics", "Trust & Credibility", "Philosophy of Governance", "Rights of Minority Groups"
 `;
 
-async function sendReqGemini(daoId, proposalDetails, decisionCriteria, characterProfile, tags, responseFormat) {
-    
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: systemPrompt.replaceAll("<DAOID>", daoId)
-    });
+async function sendReqGemini(
+  daoId,
+  proposalDetails,
+  decisionCriteria,
+  characterProfile,
+  tags,
+  responseFormat
+) {
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: systemPrompt.replaceAll("<DAOID>", daoId),
+  });
 
-    const generationConfig = {
-        temperature: 1,
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 8192,
-        responseMimeType: "text/plain",
-    };
+  const generationConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 40,
+    maxOutputTokens: 8192,
+    responseMimeType: "text/plain",
+  };
 
-    const DAOdata = fs.readFileSync(`../knBase/${daoId}_knowledge_sum.txt`, 'utf-8');
+  const DAOdata = fs.readFileSync(
+    `/Users/anoy/Documents/Hackathon Projects/minerva_main/server/src/knBase/${daoId}_knowledge_sum.txt`,
+    "utf-8"
+  );
 
-    const chatSession = model.startChat({
-        generationConfig,
-        history: [
-            {
-                role: "user",
-                parts: [{
-                    text: `The following data is the past ${daoId} DAO proposals: ${DAOdata}`
-                }]
-            }
-        ]
-    });
+  const chatSession = model.startChat({
+    generationConfig,
+    history: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `The following data is the past ${daoId} DAO proposals: ${DAOdata}`,
+          },
+        ],
+      },
+    ],
+  });
 
-    const prompt = `
+  const prompt = `
                 You are given a proposal from ${daoId} DAO. Your task is to determine the appropriate vote based on the provided character profile. The voting type and available choices are also specified—select the most suitable option accordingly.
                 ### **Proposal Details:**
                 ${proposalDetails}
@@ -121,9 +132,9 @@ async function sendReqGemini(daoId, proposalDetails, decisionCriteria, character
                 Give the output in only JSON format, and nothing else
                 `;
 
-    const result = await chatSession.sendMessage(prompt);
-    return result.response.text();
-
+  const result = await chatSession.sendMessage(prompt);
+  console.log(result);
+  return result.response.text();
 }
 
-export { sendReqGemini }
+export { sendReqGemini };

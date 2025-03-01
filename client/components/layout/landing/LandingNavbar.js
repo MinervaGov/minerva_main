@@ -3,7 +3,6 @@
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 
 import Logo from "../../ui/Logo";
-import CreateAgentButton from "../../ui/CreateAgentButton";
 import Link from "next/link";
 
 const LandingNavbar = () => {
@@ -17,9 +16,8 @@ const LandingNavbar = () => {
       </NavbarBrand>
 
       <NavbarContent justify="end">
-        <CreateAgentButton />
         <Link
-          href="/sign-in"
+          href="/agent-gallery"
           className="block w-fit rounded-full border border-gray-100 py-3 px-6 text-sm bg-white text-black transition-[colors,transform] text-center active:scale-95 font-bold "
         >
           Launch App

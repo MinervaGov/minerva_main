@@ -101,9 +101,10 @@ export const getUsersToNotify = query({
   args: {
     api_key: v.string(),
     daoId: v.string(),
+    agentId: v.string(),
   },
   handler: async (ctx, args) => {
-    const { api_key, daoId } = args;
+    const { api_key, daoId, agentId } = args;
 
     if (api_key !== process.env.API_KEY) {
       throw new Error("Invalid API key");
@@ -121,10 +122,14 @@ export const getUsersToNotify = query({
     let agentList: any[] = [];
 
     for (let row of rows) {
-      const agentId = row._id;
+      const agentIdGet = row._id;
+
+      if (agentId !== agentIdGet && agentId != undefined)
+        continue;
+
       const agent = await ctx.db
         .query("Subscriptions")
-        .withIndex("by_agent", (q) => q.eq("agentId", agentId))
+        .withIndex("by_agent", (q) => q.eq("agentId", agentIdGet))
         .first();
 
       if (agent) {

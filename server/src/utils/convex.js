@@ -193,12 +193,13 @@ const addSubscriptionDiscord = async (agentName, userDisc) => {
   });
 };
 
-const getUsersToNotify = async (daoId) => {
+const getUsersToNotify = async (daoId, agentId) => {
   const client = new ConvexHttpClient(process.env.CONVEX_URL);
 
   return await client.query(api.Subscriptions.getUsersToNotify, {
     api_key: process.env.CONVEX_API_KEY,
     daoId,
+    agentId,
   });
 };
 

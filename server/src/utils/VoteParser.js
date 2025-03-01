@@ -216,7 +216,7 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
       parsedResponse.reason
     );
 
-    const usersToNotify = await getUsersToNotify(proposal.daoId);
+    const usersToNotify = await getUsersToNotify(proposal.daoId, agentInput._id);
     await notifyDecisionTG(
       usersToNotify,
       proposal.title,

@@ -160,7 +160,7 @@ const getFinalDecision = async (decisionId, proposal, agentInput) => {
       - Response Format : 
       {
         "vote": "<index of the chosen option (starting from 1)>",
-        "reason": "<Your justification for this vote>"
+        "reason": "<Your reason for this vote>"
       }
   `;
 
@@ -247,7 +247,8 @@ function parseVoteResponse(response) {
 
     return {
       vote: parsedData.vote,
-      reason: parsedData.reason,
+      // reason: parsedData.reason,
+      reason: parsedData[Object.keys(parsedData)[1]],
       // Add additional fields as needed
     };
   } catch (error) {

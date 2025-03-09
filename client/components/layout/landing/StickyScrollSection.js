@@ -35,10 +35,10 @@ const StickyScrollSection = () => {
 
   const items = [
     {
-      title: "Gaia",
+      title: "Gemini",
       description:
-        "Powered by a Gaia Node with a custom knowledge base having information about Arbitrum, Lido and AAVE DAOs.",
-      image: "gaia.png",
+        "Powered by a Gemini API with a custom knowledge base having information about Arbitrum, Lido and AAVE DAOs.",
+      image: "gemini.png",
     },
     {
       title: "CDP Agent Kit",

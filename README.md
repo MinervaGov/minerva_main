@@ -6,7 +6,7 @@
   Agentic DAO Voting System
 </div><br>
 
-![Static Badge](https://img.shields.io/badge/Powered%20By-Gaia-white?style=for-the-badge&labelColor=gray&color=black)
+![Static Badge](https://img.shields.io/badge/Powered%20By-Gemini-white?style=for-the-badge&labelColor=gray&color=black)
 ![Static Badge](https://img.shields.io/badge/Tooling%20By-CDP%20Agent%20Kit-white?style=for-the-badge&labelColor=gray&color=blue)
 ![Static Badge](https://img.shields.io/badge/Wallet%20By-Privy-black?style=for-the-badge&color=%239093d3)
 ![Made-With-ETHERS](https://img.shields.io/badge/MADE%20WITH-Ethers-000000.svg?colorA=222222&style=for-the-badge&logoWidth=14&logo=ethereum)

@@ -56,7 +56,7 @@ const TwitterAgent = () => {
 
   const { checkTwitterProfile } = useAgent();
   const handleUsername = (e) => {
-    setUsername(e.replace(/[^a-zA-Z0-9]/g, ""));
+    setUsername(e.replace(/[^a-zA-Z0-9]/g, "").toLowerCase());
   };
 
   const checkTwitter = async () => {

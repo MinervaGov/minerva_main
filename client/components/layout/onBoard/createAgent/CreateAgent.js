@@ -29,7 +29,7 @@ const CreateAgent = () => {
   const dispatch = useDispatch();
 
   const handleAgentName = (e) => {
-    dispatch(setAgentName(e.replace(/[^a-zA-Z0-9]/g, "")));
+    dispatch(setAgentName(e.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()));
   };
 
   const checkAgentName = async () => {

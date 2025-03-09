@@ -28,7 +28,7 @@ pnpm >= 9.14.1 📦
 ```
 
 ## 🤖 Gemini API
-TODO
+Get your Gemini API key [here](https://aistudio.google.com/app/apikey) and put it in the env file under the key `GEMINI_API_KEY`
 
 ## ⚙️ Backend
 ### Pre-requisite
